@@ -1,0 +1,4 @@
+
+db_read: root
+db_read_passwd: 123456
+db_name: bl_main

@@ -1,0 +1,29 @@
+{
+	"version": 0,
+	"dependencies": [
+		{
+			"importpath": "github.com/go-sql-driver/mysql",
+			"repository": "https://github.com/go-sql-driver/mysql",
+			"revision": "3654d25ec346ee8ce71a68431025458d52a38ac0",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/jinzhu/gorm",
+			"repository": "https://github.com/jinzhu/gorm",
+			"revision": "bf0e23607840019d62e32e87e9af48e881d74b1e",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/jinzhu/inflection",
+			"repository": "https://github.com/jinzhu/inflection",
+			"revision": "3272df6c21d04180007eb3349844c89a3856bc25",
+			"branch": "master"
+		},
+		{
+			"importpath": "gopkg.in/yaml.v2",
+			"repository": "https://github.com/go-yaml/yaml",
+			"revision": "a83829b6f1293c91addabc89d0571c246397bbf4",
+			"branch": "v2"
+		}
+	]
+}
