@@ -20,10 +20,53 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "github.com/labstack/echo",
+			"repository": "https://github.com/labstack/echo",
+			"revision": "aeee1d87d0123bbd2eac036f7c6531e956cc4753",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/labstack/gommon/log",
+			"repository": "https://github.com/labstack/gommon",
+			"revision": "741a209b277dcd5705c8568329c0b6e8864dc1d1",
+			"branch": "master",
+			"path": "/log"
+		},
+		{
+			"importpath": "golang.org/x/net/context",
+			"repository": "https://github.com/golang/net",
+			"revision": "313cf39d4ac368181bce6960ac9be9e7cee67e68",
+			"branch": "master"
+		},
+		{
+			"importpath": "golang.org/x/net/html",
+			"repository": "https://github.com/golang/net",
+			"revision": "313cf39d4ac368181bce6960ac9be9e7cee67e68",
+			"branch": "master"
+		},
+		{
+			"importpath": "golang.org/x/net/websocket",
+			"repository": "https://github.com/golang/net",
+			"revision": "313cf39d4ac368181bce6960ac9be9e7cee67e68",
+			"branch": "master"
+		},
+		{
 			"importpath": "gopkg.in/yaml.v2",
 			"repository": "https://github.com/go-yaml/yaml",
 			"revision": "a83829b6f1293c91addabc89d0571c246397bbf4",
 			"branch": "v2"
+		},
+		{
+			"importpath": "menteslibres.net/gosexy/dig",
+			"repository": "https://github.com/gosexy/dig",
+			"revision": "8c84038322702f6214cc1403a74c33c86ad65f9a",
+			"branch": "master"
+		},
+		{
+			"importpath": "menteslibres.net/gosexy/to",
+			"repository": "https://github.com/gosexy/to",
+			"revision": "c20e083e31230b84ffa23c5d2fb0bc55f5292681",
+			"branch": "master"
 		}
 	]
 }

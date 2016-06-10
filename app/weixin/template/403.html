@@ -1,0 +1,30 @@
+{{define "title"}}
+对不起，没有操作权限
+{{end}}
+{{define "seo"}}
+<meta name="keywords" content="行必果，16便利，便利，16度，一路便利">
+<meta name="description" content="西安行必果科技有限公司，为您提供便利">
+{{end}}
+{{define "content"}}
+<div id="main" class="container-fluid">
+  <div class="content">
+	<h2>对不起，您没有操作权限</h2>
+	<p>将在<span id="jumpTo">3</span>秒后跳转到<a href="/">首页</a></p>
+  </div>
+</div>
+{{end}}
+{{define "js"}}
+<script type="text/javascript">
+function countDown(secs, surl){
+	var jumpTo = document.getElementById('jumpTo');
+	jumpTo.innerHTML=secs;
+	if(--secs>0){
+		setTimeout("countDown("+secs+",'"+surl+"')",1000);
+	} else {
+		location.href=surl;
+	}
+} 
+countDown(3,'/');
+</script>
+{{end}}
+

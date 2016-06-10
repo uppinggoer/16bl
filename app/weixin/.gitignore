@@ -1,0 +1,6 @@
+pkg
+bin
+
+src/vendor
+!src/vendor/mainfest
+
