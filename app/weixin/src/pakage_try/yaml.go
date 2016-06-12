@@ -38,9 +38,9 @@ func testFileStruct() {
 
 	// 下方列表
 	type class struct {
-		Name  string   `json:"name"`
-		Img   string   `json:"img"`
-		Goods []button `json:"goods"`
+		Name        string `json:"name"`
+		Img         string `json:"img"`
+		GoodsIdList []int  `yaml:"goodsIdList" json:"-"`
 	}
 
 	// 下方列表

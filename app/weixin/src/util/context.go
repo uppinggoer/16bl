@@ -1,8 +1,13 @@
 package util
 
 import (
+	"bytes"
 	"encoding/json"
+	"html/template"
+	"io/ioutil"
 	"net/http"
+	"os"
+	"strings"
 
 	. "global"
 
@@ -45,26 +50,101 @@ func Fail(ctx echo.Context, code int, msg string) error {
 	return ctx.JSON(http.StatusOK, result) // 最终调用 JSONBlob
 }
 
+type footMentEntiy struct {
+	Activite bool
+	Url      string
+	Name     string
+}
+type renderEntity struct {
+	Content  interface{}
+	FootMenu []footMentEntiy
+	Css      string
+}
+
 // render html 输出
-func Render(ctx echo.Context, contentTpl string, data map[string]interface{}) error {
-	contentTpl = TPL_PATH + contentTpl + ".tpl"
+// contentTpl 模板名  多个模板用,分割
+func Render(ctx echo.Context, contentTpl string, data interface{}) error {
+	tplInfo := renderEntity{}
 
-	// // 如果没有定义css和js模板，则定义之
-	// if jsTpl := tpl.Lookup("js"); jsTpl == nil {
-	// 	tpl.Parse(`{{define "js"}}{{end}}`)
-	// }
-	// if jsTpl := tpl.Lookup("css"); jsTpl == nil {
-	// 	tpl.Parse(`{{define "css"}}{{end}}`)
-	// }
+	// Content 元素
+	tplInfo.Content = data
 
-	// buf := new(bytes.Buffer)
-	// err := tpl.Execute(buf, data)
-	// if err != nil {
-	// 	// objLog.Errorln("excute template error:", err)
-	// 	return err
-	// }
+	// 填写css 内容
+	var cssFileList = []string{TPL_PATH + "css/home.css", TPL_PATH + "css/goods-wrap.css"}
+	for _, cssFile := range cssFileList {
+		fileCssFile, err := os.Open(cssFile)
+		if nil != err {
+			// log
+		} else {
+			cssByte, err := ioutil.ReadAll(fileCssFile)
+			if nil != err {
+				// log
+			} else {
+				tplInfo.Css += string(cssByte)
+				tplInfo.Css += "\n"
+			}
+		}
+	}
 
-	// return ctx.HTML(http.StatusOK, buf.String())
-	return ctx.HTML(http.StatusOK, contentTpl)
-	// ctx.HTML(http.StatusOK, "<html><body>XXX</body></html>")
+	// 填写下方导航
+	foot := []footMentEntiy{}
+	foot = append(foot, footMentEntiy{
+		Activite: true,
+		Url:      "www.baidu.com",
+		Name:     "yanghongzhi",
+	})
+	foot = append(foot, footMentEntiy{
+		Activite: true,
+		Url:      "www.baidu.com",
+		Name:     "yanghongzhi",
+	})
+	foot = append(foot, footMentEntiy{
+		Activite: true,
+		Url:      "www.baidu.com",
+		Name:     "yanghongzhi",
+	})
+	foot = append(foot, footMentEntiy{
+		Activite: true,
+		Url:      "www.baidu.com",
+		Name:     "yanghongzhi",
+	})
+	tplInfo.FootMenu = foot
+
+	// 所有模板
+	contentTpl = "layout" + "," + contentTpl
+	// 为了使用自定义的模板函数，首先New一个以第一个模板文件名为模板名。
+	// 这样，在ParseFiles时，新返回的*Template便还是原来的模板实例
+	htmlFiles := strings.Split(contentTpl, ",")
+	for i, contentTpl := range htmlFiles {
+		htmlFiles[i] = TPL_PATH + contentTpl
+	}
+	tpl, err := template.New("tpl").ParseFiles(htmlFiles...)
+	if err != nil {
+		// objLog.Errorf("解析模板出错（ParseFiles）：[%q] %s\n", Request(ctx).RequestURI, err)
+		return err
+	}
+
+	return executeTpl(ctx, tpl, data)
+}
+
+// 真正渲染模板
+func executeTpl(ctx echo.Context, tpl *template.Template, data interface{}) error {
+	// objLog := logic.GetLogger(ctx)
+
+	// 如果没有定义css和js模板，则定义之
+	if jsTpl := tpl.Lookup("js"); jsTpl == nil {
+		tpl.Parse(`{{define "js"}}{{end}}`)
+	}
+	if jsTpl := tpl.Lookup("css"); jsTpl == nil {
+		tpl.Parse(`{{define "css"}}{{end}}`)
+	}
+
+	buf := new(bytes.Buffer)
+	err := tpl.Execute(buf, data)
+	if err != nil {
+		// objLog.Errorln("excute template error:", err)
+		return err
+	}
+
+	return ctx.HTML(http.StatusOK, buf.String())
 }

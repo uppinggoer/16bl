@@ -1,13 +1,11 @@
 package conf
 
 import (
-	_ "encoding/json"
-	_ "fmt"
 	"util"
 )
 
 // 界面上区块按钮  如 banner/nav/func
-type Button struct {
+type button struct {
 	Icon    string `json:"icon"`
 	Name    string `json:"name"`
 	Url     string `json:"url"`
@@ -15,18 +13,18 @@ type Button struct {
 }
 
 // 下方列表
-type Class struct {
-	Name  string   `json:"name"`
-	Img   string   `json:"img"`
-	Goods []Button `json:"goods"`
+type class struct {
+	Name        string `json:"name"`
+	Img         string `json:"img"`
+	GoodsIdList []int  `yaml:"goodsIdList"`
 }
 
 // 下方列表
 type Home struct {
-	Banner []Button `json:"banner"`
-	Nav    []Button `json:"nav"`
-	Func   []Button `json:"func"`
-	Class  []Class  `json:"class"`
+	Banner []button `json:"banner"`
+	Nav    []button `json:"nav"`
+	Func   []button `json:"func"`
+	Class  []class  `json:"class"`
 }
 
 var confName = "home"

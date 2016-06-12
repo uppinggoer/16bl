@@ -25,73 +25,39 @@ nav:
   url: www.baidu.com
   trigger: null
 
-# 功能区
-func: 
-- icon: http://img01.bqstatic.com//upload/activity/cms_109794_1465350466.jpg@90Q
-  name: 冷饮
-  url: www.baidu.com
-  trigger: null
-- icon: http://img01.bqstatic.com//upload/activity/cms_109794_1465350466.jpg@90Q
-  name: 冷饮
-  url: www.baidu.com
-  trigger: null
-- icon: http://img01.bqstatic.com//upload/activity/cms_109794_1465350466.jpg@90Q
-  name: 冷饮
-  url: www.baidu.com
-  trigger: null
-- icon: http://img01.bqstatic.com//upload/activity/cms_109794_1465350466.jpg@90Q
-  name: 冷饮
-  url: www.baidu.com
-  trigger: null
-- icon: http://img01.bqstatic.com//upload/activity/cms_109794_1465350466.jpg@90Q
-  name: 冷饮
-  url: www.baidu.com
-  trigger: null
+# # 功能区
+# func: 
+# - icon: http://img01.bqstatic.com//upload/activity/cms_109794_1465350466.jpg@90Q
+#   name: 冷饮
+#   url: www.baidu.com
+#   trigger: null
+# - icon: http://img01.bqstatic.com//upload/activity/cms_109794_1465350466.jpg@90Q
+#   name: 冷饮
+#   url: www.baidu.com
+#   trigger: null
+# - icon: http://img01.bqstatic.com//upload/activity/cms_109794_1465350466.jpg@90Q
+#   name: 冷饮
+#   url: www.baidu.com
+#   trigger: null
+# - icon: http://img01.bqstatic.com//upload/activity/cms_109794_1465350466.jpg@90Q
+#   name: 冷饮
+#   url: www.baidu.com
+#   trigger: null
+# - icon: http://img01.bqstatic.com//upload/activity/cms_109794_1465350466.jpg@90Q
+#   name: 冷饮
+#   url: www.baidu.com
+#   trigger: null
 
 # 列表区
 class:
 - name: 冷饮
   img: http://img.ishequ360.com/banner/7dc59c80fa78cc5987788ca8ba3cc84f.jpeg?imageView2/1/w/750/h/360
-  goods:
-  - icon: http://img01.bqstatic.com//upload/activity/cms_109794_1465350466.jpg@90Q
-    name: 冷饮
-    url: www.baidu.com
-    trigger: null
-  - icon: http://img01.bqstatic.com//upload/activity/cms_109794_1465350466.jpg@90Q
-    name: 冷饮
-    url: www.baidu.com
-    trigger: null
-  - icon: http://img01.bqstatic.com//upload/activity/cms_109794_1465350466.jpg@90Q
-    name: 冷饮
-    url: www.baidu.com
-    trigger: null
-- name: 冷饮
+  url: 
+  trigger: null
+  goodsIdList: [100,234,235]
+- name: 卤味
   img: 
-  goods:
-  - icon: http://img01.bqstatic.com//upload/activity/cms_109794_1465350466.jpg@90Q
-    name: 冷饮
-    url: www.baidu.com
-    trigger: null
-  - icon: http://img01.bqstatic.com//upload/activity/cms_109794_1465350466.jpg@90Q
-    name: 冷饮
-    url: www.baidu.com
-    trigger: null
-  - icon: http://img01.bqstatic.com//upload/activity/cms_109794_1465350466.jpg@90Q
-    name: 冷饮
-    url: www.baidu.com
-    trigger: null
-- name: 冷饮
+  goodsIdList: [100,234,235]
+- name: 水果
   img: 
-  goods:
-  - icon: http://img01.bqstatic.com//upload/activity/cms_109794_1465350466.jpg@90Q
-    name: 冷饮
-    url: www.baidu.com
-    trigger: null
-  - icon: http://img01.bqstatic.com//upload/activity/cms_109794_1465350466.jpg@90Q
-    name: 冷饮
-    url: www.baidu.com
-    trigger: null
-  - icon: http://img01.bqstatic.com//upload/activity/cms_109794_1465350466.jpg@90Q
-    name: 冷饮
-    url: www.baidu.com
-    trigger: null
+  goodsIdList: [100,234,235]
