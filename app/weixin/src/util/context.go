@@ -3,6 +3,7 @@ package util
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"io/ioutil"
 	"net/http"
@@ -70,7 +71,7 @@ func Render(ctx echo.Context, contentTpl string, data interface{}) error {
 	tplInfo.Content = data
 
 	// 填写css 内容
-	var cssFileList = []string{TPL_PATH + "css/home.css", TPL_PATH + "css/goods-wrap.css"}
+	var cssFileList = []string{STATIC_PATH + "css/home.css", STATIC_PATH + "css/goods-wrap.css"}
 	for _, cssFile := range cssFileList {
 		fileCssFile, err := os.Open(cssFile)
 		if nil != err {
@@ -111,19 +112,20 @@ func Render(ctx echo.Context, contentTpl string, data interface{}) error {
 	tplInfo.FootMenu = foot
 
 	// 所有模板
-	contentTpl = "layout" + "," + contentTpl
+	contentTpl = "layout" + "," + contentTpl + "," + "home/bottom-nav"
 	// 为了使用自定义的模板函数，首先New一个以第一个模板文件名为模板名。
 	// 这样，在ParseFiles时，新返回的*Template便还是原来的模板实例
 	htmlFiles := strings.Split(contentTpl, ",")
 	for i, contentTpl := range htmlFiles {
-		htmlFiles[i] = TPL_PATH + contentTpl
+		htmlFiles[i] = TPL_PATH + contentTpl + ".tpl"
 	}
 	tpl, err := template.New("tpl").ParseFiles(htmlFiles...)
+	fmt.Println(tpl)
+	panic("SD")
 	if err != nil {
 		// objLog.Errorf("解析模板出错（ParseFiles）：[%q] %s\n", Request(ctx).RequestURI, err)
 		return err
 	}
-
 	return executeTpl(ctx, tpl, data)
 }
 

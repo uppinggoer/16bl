@@ -1,14 +1,10 @@
-// Copyright 2016 The StudyGolang Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-// http://studygolang.com
-// Author：polaris	polaris@studygolang.com
-
 package controller
 
 import (
-	daoConf "dao/conf"
-	_ "fmt"
+	// "fmt"
+
+	apiIndex "http/api/index"
+	"logic"
 	"util"
 
 	"github.com/labstack/echo"
@@ -23,16 +19,32 @@ func (self IndexController) RegisterRoute(e *echo.Group) {
 
 // Index 首页
 func (IndexController) Index(ctx echo.Context) error {
-	homeConf, err := daoConf.NewHome()
-
+	homeConf, goodsIdMap, err := logic.GetHomeData(ctx)
 	if nil != err {
 		// log
 		return util.Fail(ctx, 10, "XXX")
 	}
-	// fmt.Println("/n/n%v/n", m)
+
+	homeData := apiIndex.Home{}
+	homeData.Banner = homeConf.Banner
+	homeData.Nav = homeConf.Nav
+	for _, itemConf := range homeConf.Class {
+		classConf := apiIndex.Class{}
+		classConf.Img = itemConf.Img
+		classConf.Name = itemConf.Name
+
+		for _, goodsId := range itemConf.GoodsIdList {
+			if v, ok := goodsIdMap[goodsId]; ok {
+				classConf.GoodsList = append(classConf.GoodsList, *v)
+			} else {
+				// log id not exists
+			}
+		}
+
+		homeData.Class = append(homeData.Class, classConf)
+	}
 
 	// time.Sleep(3 * time.Second)
-
-	return util.Success(ctx, homeConf)
-	// return util.Render(ctx, "", homeConf)
+	// return util.Success(ctx, homeData)
+	return util.Render(ctx, "home/index", homeData)
 }

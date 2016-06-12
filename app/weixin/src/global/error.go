@@ -13,4 +13,8 @@ var (
 	NotExistKey = errors.New("there is no this key")
 	NotPointer  = errors.New("value is not a pointer")
 	UnknowError = errors.New("other error")
+
+	// sql
+	RecordEmpty = errors.New("the condition get empty result")
+	RecordError = errors.New("do sql comes out error")
 )

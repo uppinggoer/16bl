@@ -14,6 +14,7 @@ var (
 	CONF_PATH        string // eg /XX/XX/XX/16bl/app/weixin/conf
 	APP_CONF_PATH    string // eg /XX/XX/XX/16bl/app/weixin/conf/app
 	TPL_PATH         string // eg  /XX/XX/XX/16bl/app/weixin/template
+	STATIC_PATH      string // eg  /XX/XX/XX/16bl/app/weixin/static
 )
 
 func init() {
@@ -42,4 +43,5 @@ func init() {
 	CONF_PATH = BASE_PATH + "/conf/"
 	APP_CONF_PATH = BASE_PATH + "/conf/app/"
 	TPL_PATH = BASE_PATH + "/template/"
+	STATIC_PATH = BASE_PATH + "/static/"
 }
