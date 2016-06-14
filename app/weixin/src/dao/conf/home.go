@@ -16,6 +16,7 @@ type Button struct {
 type Class struct {
 	Name        string  `json:"name"`
 	Img         string  `json:"img"`
+	Color       string  `json:"color"`
 	GoodsIdList []int64 `yaml:"goodsIdList" json:"goodsIdList"`
 }
 

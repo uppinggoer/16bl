@@ -3,7 +3,7 @@ package util
 import (
 	"bytes"
 	"encoding/json"
-	// "fmt"
+	"fmt"
 	"html/template"
 	"net/http"
 	"strings"
@@ -50,14 +50,26 @@ func Fail(ctx echo.Context, code int, msg string) error {
 }
 
 type footMentEntiy struct {
+	Id       string
 	Activite bool
 	Url      string
 	Name     string
 	Icon     string
 }
 type renderEntity struct {
-	Content  interface{}
-	FootMenu []footMentEntiy
+	GlobalContext map[string]interface{}
+	Content       interface{}
+	FootMenu      []footMentEntiy
+}
+
+// 自定义模板函数
+var funcMap = template.FuncMap{
+	// 获取gravatar头像
+	"addGlobalContext": func(golbalContext, key, value interface{}) interface{} {
+		strKey := fmt.Sprint(key)
+		golbalContext.(map[string]interface{})[strKey] = value
+		return key
+	},
 }
 
 // render html 输出
@@ -67,30 +79,35 @@ func Render(ctx echo.Context, contentTpl string, data interface{}) error {
 
 	// Content 元素
 	tplInfo.Content = data
+	tplInfo.GlobalContext = make(map[string]interface{})
 
 	// 填写下方导航
 	foot := []footMentEntiy{}
 	foot = append(foot, footMentEntiy{
 		Activite: true,
 		Icon:     "icon-home",
+		Id:       "home",
 		Url:      "www.baidu.com",
 		Name:     "首页",
 	})
 	foot = append(foot, footMentEntiy{
 		Activite: false,
 		Icon:     "icon-list",
+		Id:       "list",
 		Url:      "www.baidu.com",
 		Name:     "超市",
 	})
 	foot = append(foot, footMentEntiy{
 		Activite: false,
 		Icon:     "icon-shopping-cart",
+		Id:       "cart",
 		Url:      "www.baidu.com",
 		Name:     "购物车",
 	})
 	foot = append(foot, footMentEntiy{
 		Activite: false,
 		Icon:     "icon-user",
+		Id:       "user",
 		Url:      "www.baidu.com",
 		Name:     "我的",
 	})
@@ -104,11 +121,13 @@ func Render(ctx echo.Context, contentTpl string, data interface{}) error {
 	for i, contentTpl := range htmlFiles {
 		htmlFiles[i] = TPL_PATH + contentTpl + ".tpl"
 	}
-	tpl, err := template.New("layout.tpl").ParseFiles(htmlFiles...)
+	tpl, err := template.New("layout.tpl").Funcs(funcMap).ParseFiles(htmlFiles...)
 	if err != nil {
 		// objLog.Errorf("解析模板出错（ParseFiles）：[%q] %s\n", Request(ctx).RequestURI, err)
 		return err
 	}
+
+	tpl = tpl.Option("missingkey=zero")
 	return executeTpl(ctx, tpl, tplInfo)
 }
 

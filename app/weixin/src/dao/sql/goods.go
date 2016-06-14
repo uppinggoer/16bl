@@ -8,6 +8,7 @@ import (
 type Goods struct {
 	Id           int64 `gorm:"primary_key"`
 	Name         string
+	Norms        string
 	StoreId      int64
 	StoreName    string
 	Unit         string

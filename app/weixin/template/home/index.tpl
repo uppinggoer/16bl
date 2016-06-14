@@ -1,7 +1,17 @@
 {{define "content"}}
-<!-- 上方轮播 banner -->
+{{$globalContext := .GlobalContext}}
+
 {{with .Content}}
 {{with .Banner}}
+
+<!-- 上方轮播 banner -->
+<script type="text/javascript">
+	$(function(){
+		$('#carousel-banner').carousel({
+			interval: 3000
+		});
+	});
+</script>
 <div id="carousel-banner" class="carousel-inner">
 	{{range $idx,$info := .}}
 	<div class="item {{if eq $idx 0}} active {{end}}">
@@ -18,13 +28,6 @@
 	</div>
 </div>
 {{end}}
-<script type="text/javascript">
-	$(function(){
-		$('#carousel-banner').carousel({
-			interval: 2000
-		});
-	});
-</script>
 
 <!-- 上方导航栏 -->
 <div class="up-navbar container-outter">
@@ -43,28 +46,33 @@
 	{{range .Class}}
 	<div class="container-outter">
 		<div class="inner">
-			<div class="desc" style="border-color:XX;">
-				<span style="float:left;color:XXX">{{.Name}}</span>
+			<div class="desc" style="border-color:#{{.Color}};">
+				<span style="float:left;color:#{{.Color}}">{{.Name}}</span>
 				<a href="XXXX" style="float:right;">更多>></a>
 			</div>
 			<img class="banner" src="{{.Img}}"/>
 			<div class="goods-list" style="background-color:#EFEFEF;display:inline-block;">
 				{{range .GoodsList}}
 				<div class="goods">
-					<a href="XXXX">
+					<a data-toggle="modal" data-target="#detailModelOutter" data-whatever="{{addGlobalContext $globalContext .Id .}}">
 						<img src="{{.Image}}"/>
 					</a>
 					<div style="padding-top:10px;text-align:left">
 						<p>{{.Name}}</p>
-						<p>{{.Desc}}</p>
+						<p>{{.Norms}}</p>
 						<p>
 							<span class="price">￥{{.Price}}</span>
 							<span><del>￥{{.Marketprice}}</del></span>
 						</p>
-					</div>
-					<div class="item-add">
-						<div class="btn -plus">
-							<i class="icon-plus"></i>
+					</div> 
+					<div class="item-edit">
+						<div class="item-cart" style="bottom: 29px;right: 39px;"> 
+							<i class="count"><span goods-id="{{.Id}}">0</span></i> 
+						</div> 
+						<div class="item-cart" goods-id="{{.Id}}" value=1>
+							<div class="btn -purchase">
+								<i class="icon-plus"></i>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -82,4 +90,68 @@
 	</div>
 </div> -->
 {{end}}
+
+<div class="modal fade modal-goods-detail" id="detailModelOutter" tabindex="-1" role="dialog" aria-labelledby="detailMobal"> 
+	<div class="modal-dialog modal-sm detailModelInner" role="document"> 
+		<div class="modal-content background"> 
+			<div class="title"> 
+				<span class="goods-title" id="detailMobal">商品详情</span> 
+			</div> 
+			<div class="goods" style="width: 100%;text-align:center;margin-top: 1px;"> 
+				<div class="foreground" style="height: 190px;"> 
+					<img class="goods-img" style="width:80%;height:188px;" src="http://img01.bqstatic.com/upload/goods/201/605/2409/20160524095244_729759.jpg@200w_200h_90Q" /> 
+				</div> 
+				<div class="detail">
+					<p> 
+						<span class="goods-name"></span>
+						<span class="goods-norms"></span>
+					</p> 
+					<p> 
+						<span class="price"></span>
+						<span><del style="font-size: 10px;"></del></span>
+					</p> 
+					<div class="item-edit">
+						<div class="item-cart" value=-1 style="bottom: 30px;right: 58px;"> 
+							<div class="btn -purchase"> 
+								<i class="icon-minus"></i> 
+							</div> 
+						</div> 
+						<div class="item-cart" style="bottom: 29px;right: 39px;"> 
+							<i class="count"><span>0</span></i> 
+						</div> 
+						<div class="item-cart" value=1 style="bottom: 30px;right: 8px;"> 
+							<div class="btn -purchase"> 
+								<i class="icon-plus"></i> 
+							</div> 
+						</div>
+					</div>
+				</div>
+				</div> 
+					<div class="desc"> 
+				</div> 
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$('#detailModelOutter').on('show.bs.modal', function (event) {
+		// Button that triggered the modal
+		var button = $(event.relatedTarget);
+		// Extract info from data-* attributes
+		var goodsId = button.data('whatever');
+		// If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+		// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+		var modal = $(this);
+		modal.find('.goods-img').attr("src",globalContext[goodsId].Image);
+		modal.find('.goods-name').text(globalContext[goodsId].Name);
+		modal.find('.goods-norms').text(globalContext[goodsId].Norms);
+		modal.find('.price').text("￥" + globalContext[goodsId].Price.toFixed(1));
+		modal.find('del').text("￥" + globalContext[goodsId].Marketprice.toFixed(1));
+		modal.find('.count').find("span").attr("goods-id",goodsId);
+		modal.find('.count').find("span").html($(".count").find("span[goods-id="+goodsId+"]").html());
+		modal.find('.item-cart').attr("goods-id",goodsId);
+	})
+</script>
+<!-- <script src="js/goods-wrap.js"></script> -->
+<script src="file:///Users/yanghongzhi/work/fe_work/js/goods-wrap.js"></script>
 {{end}}

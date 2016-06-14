@@ -59,11 +59,14 @@ class:
 - name: 冷饮
   img: http://img01.bqstatic.com//upload/activity/2016060813471954.jpg@90Q.jpg
   url: 
+  color: B59C4B
   trigger: null
   goodsIdList: [1,2,3]
 - name: 卤味
   img: http://img01.bqstatic.com//upload/activity/2016060813471954.jpg@90Q.jpg
+  color: B59C4B
   goodsIdList: [2,4,3]
 - name: 水果
   img: http://img01.bqstatic.com//upload/activity/2016060813471954.jpg@90Q.jpg
+  color: B59C4B
   goodsIdList: [1,3,5]

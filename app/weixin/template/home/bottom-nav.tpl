@@ -1,16 +1,17 @@
 {{define "bottom-navbar"}}
 	<!-- 下方导航栏 -->
 	<div id="bottom-navbar">
-		<div style="height: 28px;text-align:center">
-			<span><a href="/" style="color: grey;">查看全部商品 >></a></span>
+		<div style="height: 26px;text-align:center;background-color:#EFEFEF;">
+			<span>
+				<a href="/" style="color:grey;">查看全部商品 >></a>
+			</span>
 		</div>
-		<div style="height: 36px;">
-		</div>
+		<hr style="height: 18px;background-color:#EFEFEF;"></hr>
 		<nav class="navbar navbar-fixed-bottom" style="background-color:white;">
 			<ul id="foot-menu" class="nav nav-tabs">
 				{{range .FootMenu}}
-				<li {{if .Activite}}class="active"{{end}}>
-					<a href="{{.Url}}" style="height: 32px;text-align: center;">
+				<li id="{{.Id}}" {{if .Activite}}class="active"{{end}}>
+					<a href="{{.Url}}">
 						<i class="{{.Icon}} icon-2x" aria-hidden="true"></i>
 						<p>{{.Name}}</p>
 						<!-- <span class="icon-home icon-2x" aria-hidden="true"></span> -->

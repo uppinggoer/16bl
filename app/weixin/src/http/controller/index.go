@@ -32,6 +32,7 @@ func (IndexController) Index(ctx echo.Context) error {
 		classConf := apiIndex.Class{}
 		classConf.Img = itemConf.Img
 		classConf.Name = itemConf.Name
+		classConf.Color = itemConf.Color
 
 		for _, goodsId := range itemConf.GoodsIdList {
 			if v, ok := goodsIdMap[goodsId]; ok {

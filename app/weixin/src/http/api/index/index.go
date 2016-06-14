@@ -15,6 +15,7 @@ type Home struct {
 // 下方列表
 type Class struct {
 	Name      string         `json:"name"`
+	Color     string         `json:"color"`
 	Img       string         `json:"img"`
 	GoodsList []daoSql.Goods `json:"goodsList"`
 }
