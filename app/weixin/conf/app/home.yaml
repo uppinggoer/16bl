@@ -1,5 +1,11 @@
 banner:
-- icon: http://img.ishequ360.com/banner/7dc59c80fa78cc5987788ca8ba3cc84f.jpeg?imageView2/1/w/750/h/360
+- icon: http://img.ishequ360.com/banner/0ca515420223d8e8fbc05e21cce303ff.jpeg?imageView2/1/w/750/h/360
+  name: banner
+  # 点击后触发的 url
+  url: null
+  # 点击后触发的动作，如果url为空，则直接触发
+  trigger: null
+- icon: http://img.ishequ360.com/160317/ff24da0d3bed1effd57bc9eb9eff829e.jpeg?imageView2/1/w/750/h/360
   name: banner
   # 点击后触发的 url
   url: null
@@ -12,15 +18,15 @@ nav:
   name: 特价门户
   url: null
   trigger: null
-- icon: http://img.ishequ360.com//160312/d134e4a4374e9c9257e588a850ec84bc.png
+- icon: http://img.ishequ360.com//160312/f9d6cad96683f074ff4b5c07b617ad6b.png
   name: 寻找帮助
   url: null
   trigger: null
-- icon: http://img.ishequ360.com//160312/d134e4a4374e9c9257e588a850ec84bc.png
+- icon: http://img.ishequ360.com//images/2.2/favorites-v0606.png
   name: 专属商场
   url: null
   trigger: null
-- icon: http://img.ishequ360.com//160312/d134e4a4374e9c9257e588a850ec84bc.png
+- icon: http://img.ishequ360.com//160312/cf8b9cccc03eab0013b8218b2a77faee.png
   name: 我要分享
   url: www.baidu.com
   trigger: null
@@ -51,13 +57,13 @@ nav:
 # 列表区
 class:
 - name: 冷饮
-  img: http://img.ishequ360.com/banner/7dc59c80fa78cc5987788ca8ba3cc84f.jpeg?imageView2/1/w/750/h/360
+  img: http://img01.bqstatic.com//upload/activity/2016060813471954.jpg@90Q.jpg
   url: 
   trigger: null
   goodsIdList: [1,2,3]
 - name: 卤味
-  img: 
+  img: http://img01.bqstatic.com//upload/activity/2016060813471954.jpg@90Q.jpg
   goodsIdList: [2,4,3]
 - name: 水果
-  img: 
+  img: http://img01.bqstatic.com//upload/activity/2016060813471954.jpg@90Q.jpg
   goodsIdList: [1,3,5]

@@ -8,11 +8,11 @@
 		</div>
 		<nav class="navbar navbar-fixed-bottom" style="background-color:white;">
 			<ul id="foot-menu" class="nav nav-tabs">
-				{{range .footMenu}}
-				<li {{if .active}}class="active"{{end}}>
-					<a href={{.url}} style="height: 32px;text-align: center;">
-						<i class="icon-home icon-2x" aria-hidden="true"></i>
-						<p>{{.name}}</p>
+				{{range .FootMenu}}
+				<li {{if .Activite}}class="active"{{end}}>
+					<a href="{{.Url}}" style="height: 32px;text-align: center;">
+						<i class="{{.Icon}} icon-2x" aria-hidden="true"></i>
+						<p>{{.Name}}</p>
 						<!-- <span class="icon-home icon-2x" aria-hidden="true"></span> -->
 					</a>
 				</li>

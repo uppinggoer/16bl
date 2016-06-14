@@ -3,11 +3,9 @@ package util
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
+	// "fmt"
 	"html/template"
-	"io/ioutil"
 	"net/http"
-	"os"
 	"strings"
 
 	. "global"
@@ -55,11 +53,11 @@ type footMentEntiy struct {
 	Activite bool
 	Url      string
 	Name     string
+	Icon     string
 }
 type renderEntity struct {
 	Content  interface{}
 	FootMenu []footMentEntiy
-	Css      string
 }
 
 // render html 输出
@@ -70,44 +68,31 @@ func Render(ctx echo.Context, contentTpl string, data interface{}) error {
 	// Content 元素
 	tplInfo.Content = data
 
-	// 填写css 内容
-	var cssFileList = []string{STATIC_PATH + "css/home.css", STATIC_PATH + "css/goods-wrap.css"}
-	for _, cssFile := range cssFileList {
-		fileCssFile, err := os.Open(cssFile)
-		if nil != err {
-			// log
-		} else {
-			cssByte, err := ioutil.ReadAll(fileCssFile)
-			if nil != err {
-				// log
-			} else {
-				tplInfo.Css += string(cssByte)
-				tplInfo.Css += "\n"
-			}
-		}
-	}
-
 	// 填写下方导航
 	foot := []footMentEntiy{}
 	foot = append(foot, footMentEntiy{
 		Activite: true,
+		Icon:     "icon-home",
 		Url:      "www.baidu.com",
-		Name:     "yanghongzhi",
+		Name:     "首页",
 	})
 	foot = append(foot, footMentEntiy{
-		Activite: true,
+		Activite: false,
+		Icon:     "icon-list",
 		Url:      "www.baidu.com",
-		Name:     "yanghongzhi",
+		Name:     "超市",
 	})
 	foot = append(foot, footMentEntiy{
-		Activite: true,
+		Activite: false,
+		Icon:     "icon-shopping-cart",
 		Url:      "www.baidu.com",
-		Name:     "yanghongzhi",
+		Name:     "购物车",
 	})
 	foot = append(foot, footMentEntiy{
-		Activite: true,
+		Activite: false,
+		Icon:     "icon-user",
 		Url:      "www.baidu.com",
-		Name:     "yanghongzhi",
+		Name:     "我的",
 	})
 	tplInfo.FootMenu = foot
 
@@ -119,14 +104,12 @@ func Render(ctx echo.Context, contentTpl string, data interface{}) error {
 	for i, contentTpl := range htmlFiles {
 		htmlFiles[i] = TPL_PATH + contentTpl + ".tpl"
 	}
-	tpl, err := template.New("tpl").ParseFiles(htmlFiles...)
-	fmt.Println(tpl)
-	panic("SD")
+	tpl, err := template.New("layout.tpl").ParseFiles(htmlFiles...)
 	if err != nil {
 		// objLog.Errorf("解析模板出错（ParseFiles）：[%q] %s\n", Request(ctx).RequestURI, err)
 		return err
 	}
-	return executeTpl(ctx, tpl, data)
+	return executeTpl(ctx, tpl, tplInfo)
 }
 
 // 真正渲染模板
