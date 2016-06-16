@@ -17,4 +17,7 @@ var (
 	// sql
 	RecordEmpty = errors.New("the condition get empty result")
 	RecordError = errors.New("do sql comes out error")
+
+	// cart
+	CartEmpty = errors.New("cart is empty")
 )

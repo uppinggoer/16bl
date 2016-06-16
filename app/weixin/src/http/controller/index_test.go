@@ -9,10 +9,19 @@ import (
 )
 
 func TestIndex(t *testing.T) {
-	context := util.NewContext()
+	context := util.NewContext("/")
 	index := IndexController{}
 	err := index.Index(context)
 	if err != nil {
 		t.Fatal("err:", err)
 	}
 }
+
+// func TestCart(t *testing.T) {
+// 	context := util.NewContext("/cart/list?goods_ids=1,2,3,4&request_id=eet")
+// 	index := CartController{}
+// 	err := index.CartList(context)
+// 	if err != nil {
+// 		t.Fatal("err:", err)
+// 	}
+// }

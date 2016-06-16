@@ -53,6 +53,7 @@ type footMentEntiy struct {
 	Id       string
 	Activite bool
 	Url      string
+	Trigger  string
 	Name     string
 	Icon     string
 }
@@ -88,6 +89,7 @@ func Render(ctx echo.Context, contentTpl string, data interface{}) error {
 		Icon:     "icon-home",
 		Id:       "home",
 		Url:      "www.baidu.com",
+		Trigger:  "",
 		Name:     "首页",
 	})
 	foot = append(foot, footMentEntiy{
@@ -95,13 +97,15 @@ func Render(ctx echo.Context, contentTpl string, data interface{}) error {
 		Icon:     "icon-list",
 		Id:       "list",
 		Url:      "www.baidu.com",
+		Trigger:  "",
 		Name:     "超市",
 	})
 	foot = append(foot, footMentEntiy{
 		Activite: false,
 		Icon:     "icon-shopping-cart",
 		Id:       "cart",
-		Url:      "www.baidu.com",
+		Url:      "",
+		Trigger:  "getCartInfo",
 		Name:     "购物车",
 	})
 	foot = append(foot, footMentEntiy{
@@ -109,6 +113,7 @@ func Render(ctx echo.Context, contentTpl string, data interface{}) error {
 		Icon:     "icon-user",
 		Id:       "user",
 		Url:      "www.baidu.com",
+		Trigger:  "",
 		Name:     "我的",
 	})
 	tplInfo.FootMenu = foot

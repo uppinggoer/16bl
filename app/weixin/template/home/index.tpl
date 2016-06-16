@@ -54,6 +54,11 @@
 			<div class="goods-list" style="background-color:#EFEFEF;display:inline-block;">
 				{{range .GoodsList}}
 				<div class="goods">
+					<div class="cart-count-flag"> 
+						<div class="item-cart" goods-id="{{.Id}}" style="display:none"> 
+							<i class="count"><span goods-id="{{.Id}}">0</span></i> 
+						</div>
+					</div>
 					<a data-toggle="modal" data-target="#detailModelOutter" data-whatever="{{addGlobalContext $globalContext .Id .}}">
 						<img src="{{.Image}}"/>
 					</a>
@@ -66,9 +71,6 @@
 						</p>
 					</div> 
 					<div class="item-edit">
-						<div class="item-cart" style="bottom: 29px;right: 39px;"> 
-							<i class="count"><span goods-id="{{.Id}}">0</span></i> 
-						</div> 
 						<div class="item-cart" goods-id="{{.Id}}" value=1>
 							<div class="btn -purchase">
 								<i class="icon-plus"></i>

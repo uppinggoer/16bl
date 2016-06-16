@@ -28,10 +28,10 @@ type Home struct {
 	Class  []Class  `json:"class"`
 }
 
-var confName = "home"
-
 // 读取 home.yaml的数据
-func NewHome() (Home, error) {
+func HomeConf() (Home, error) {
+	var confName = "home"
+
 	home := new(Home)
 	err := util.AppData(confName, home)
 	if nil != err {

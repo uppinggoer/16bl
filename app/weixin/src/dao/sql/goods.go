@@ -33,6 +33,12 @@ type Goods struct {
 	Mtime        string `json:"-"`
 }
 
+const (
+	GOODS_OFF = 0
+	GOODS_ON  = 1
+	GOODS_DEL = 254
+)
+
 func (this *Goods) TableName() string {
 	return "goods"
 }

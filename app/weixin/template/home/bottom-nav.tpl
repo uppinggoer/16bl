@@ -11,7 +11,14 @@
 			<ul id="foot-menu" class="nav nav-tabs">
 				{{range .FootMenu}}
 				<li id="{{.Id}}" {{if .Activite}}class="active"{{end}}>
-					<a href="{{.Url}}">
+					{{if eq "cart" .Id}}
+					<div class="cart-count-flag"> 
+						<div class="item-cart" style="display: none; padding: 0px 7px; position: absolute; top: 0px; right: 0px;"> 
+							<i class="count"><span>0</span></i> 
+						</div>
+					</div>
+					{{end}}
+					<a trigger="{{.Trigger}}" href="{{.Url}}" class="trigger">
 						<i class="{{.Icon}} icon-2x" aria-hidden="true"></i>
 						<p>{{.Name}}</p>
 						<!-- <span class="icon-home icon-2x" aria-hidden="true"></span> -->

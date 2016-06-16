@@ -17,7 +17,7 @@ import (
  *   goodsList 目前直接返回 dao/sql/goods中字段
  */
 func GetHomeData(ctx echo.Context) (daoConf.Home, map[int64]*daoSql.Goods, error) {
-	homeConf, err := daoConf.NewHome()
+	homeConf, err := daoConf.HomeConf()
 	if nil != err {
 		// log
 		return daoConf.Home{}, map[int64]*daoSql.Goods{}, err

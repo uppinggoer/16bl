@@ -12,9 +12,9 @@ import (
 	"github.com/labstack/echo/test"
 )
 
-func NewContext() echo.Context {
+func NewContext(url string) echo.Context {
 	e := echo.New()
-	req := test.NewRequest(echo.POST, "/", strings.NewReader(""))
+	req := test.NewRequest(echo.POST, url, strings.NewReader(""))
 	rec := test.NewResponseRecorder()
 	c := e.NewContext(req, rec).(echo.Context)
 

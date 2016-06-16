@@ -19,15 +19,33 @@
 	<script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
 	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 	<script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-	
-	<script type="text/javascript">
-
-	</script>
 </head>
 <body>
 	{{template "content" .}}
 	{{template "bottom-navbar" .}}
+	<div id="cart-ball" style="
+    height: 15px;
+    display: block;
+    width: 15px;
+    position: absolute;
+    left: 160px;
+    bottom: 70px;
+    z-index: 10;
+    border-radius: 50%;
+    top: 936px;
+    background-color: red;
+"></div>
 </body>
 	{{template "js" .}}
-	<script>var globalContext = {{.GlobalContext}};</script>
+	<script type="text/javascript">
+		$(".trigger").click(function(e) {
+			var self = $(this);
+			var trigger = self.attr("trigger");
+			if (undefined != trigger) {
+				e.preventDefault();
+				eval(trigger)();
+			}
+		});
+	</script>
+	<script>var globalContext = {{.GlobalContext}}; var globalCart=getCart()</script>
 </html>
