@@ -12,13 +12,16 @@ import (
 	"github.com/labstack/echo/test"
 )
 
-func NewContext(url string) echo.Context {
+func NewContext(fileName, url, queryString string) echo.Context {
 	e := echo.New()
-	req := test.NewRequest(echo.POST, url, strings.NewReader(""))
+	req := test.NewRequest(echo.POST, url, strings.NewReader(queryString))
+	req.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 	rec := test.NewResponseRecorder()
 	c := e.NewContext(req, rec).(echo.Context)
 
-	var fileName = "/tmp/text"
+	if 0 >= len(fileName) {
+		fileName = "/tmp/text"
+	}
 	if Exist(fileName) {
 		os.Truncate(fileName, 0)
 	}

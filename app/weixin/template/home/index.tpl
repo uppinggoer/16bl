@@ -42,7 +42,7 @@
 </div>
 
 <!--商品列表 --> 
-<div class="shop-class">
+<div class="goods-list">
 	{{range .Class}}
 	<div class="container-outter">
 		<div class="inner">
@@ -135,6 +135,8 @@
 		</div>
 	</div>
 </div>
+{{end}}
+{{define "js"}}
 <script type="text/javascript">
 	$('#detailModelOutter').on('show.bs.modal', function (event) {
 		// Button that triggered the modal
@@ -152,8 +154,10 @@
 		modal.find('.count').find("span").attr("goods-id",goodsId);
 		modal.find('.count').find("span").html($(".count").find("span[goods-id="+goodsId+"]").html());
 		modal.find('.item-cart').attr("goods-id",goodsId);
-	})
+	});
+	// $("#foot-menu").find(".active").removeClass("active");
+	// $("#foot-menu").find("#home").addClass("active");
 </script>
 <!-- <script src="js/goods-wrap.js"></script> -->
-<script src="file:///Users/yanghongzhi/work/fe_work/js/goods-wrap.js"></script>
+<script src="/static/js/goods-wrap.js"></script>
 {{end}}

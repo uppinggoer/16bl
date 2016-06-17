@@ -104,8 +104,8 @@ func Render(ctx echo.Context, contentTpl string, data interface{}) error {
 		Activite: false,
 		Icon:     "icon-shopping-cart",
 		Id:       "cart",
-		Url:      "",
-		Trigger:  "getCartInfo",
+		Url:      "http://127.0.0.1:8880/static/cart.html",
+		Trigger:  "",
 		Name:     "购物车",
 	})
 	foot = append(foot, footMentEntiy{

@@ -9,7 +9,7 @@ import (
 
 /**
  * @abstract 返回购物车信息
- * @param ctx
+ * @param goodsList
  * @return
  *   exception 购物车提示信息
  *   goodsList 目前直接返回 dao/sql/goods中字段
