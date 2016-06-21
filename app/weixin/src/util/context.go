@@ -88,7 +88,7 @@ func Render(ctx echo.Context, contentTpl string, data interface{}) error {
 		Activite: true,
 		Icon:     "icon-home",
 		Id:       "home",
-		Url:      "www.baidu.com",
+		Url:      "/",
 		Trigger:  "",
 		Name:     "首页",
 	})
@@ -104,7 +104,7 @@ func Render(ctx echo.Context, contentTpl string, data interface{}) error {
 		Activite: false,
 		Icon:     "icon-shopping-cart",
 		Id:       "cart",
-		Url:      "http://127.0.0.1:8880/static/cart.html",
+		Url:      "/static/cart.html",
 		Trigger:  "",
 		Name:     "购物车",
 	})

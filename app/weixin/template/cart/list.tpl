@@ -39,7 +39,7 @@
 				</p>
 			</div> 
 			<div class="item-edit">
-				<div class="item-cart" value="-1" style="bottom: 30px;right: 58px;" goods-id="{%=goodsId%}"> 
+				<div class="item-cart item-cart-click" value="-1" style="bottom: 30px;right: 58px;" goods-id="{%=goodsId%}"> 
 					<div class="btn -purchase"> 
 						<i class="icon-minus"></i> 
 					</div> 
@@ -47,7 +47,7 @@
 				<div class="item-cart" style="bottom: 29px;right: 39px;" goods-id="{%=goodsId%}"> 
 					<i class="count"><span goods-id="{%=goodsId%}">{%=it['map'][goodsId]['goodsNum']%}</span></i> 
 				</div> 
-				<div class="item-cart" value="1" style="bottom: 30px;right: 8px;" goods-id="{%=goodsId%}"> 
+				<div class="item-cart item-cart-click" value="1" style="bottom: 30px;right: 8px;" goods-id="{%=goodsId%}"> 
 					<div class="btn -purchase"> 
 						<i class="icon-plus"></i> 
 					</div> 
@@ -74,18 +74,31 @@
 			</div>
 		</div>
 	</div>
-
 	<div class="modal fade" id="notice" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 		<div class="modal-dialog" role="document" style="width: 68%;background-color: white;text-align: center;margin-left: 16%;margin-top: 51%;">
 			<div class="" style="display: inline-block;padding: 9%;">
 				<span class="modal-body">是否删除所有商品</span>
 			</div>
-			<div style="display: inline-block;width: 100%;text-align: center;border-top-style: groove;">
-				<div style="display: inline-block;width: 47%;color: #2281ec;border-right-style: groove;">
-					<div style="margin-top: 8px;margin-bottom: 6px;" data-dismiss="modal">取消</div>
+			<div style="display: inline-block;width: 100%;text-align: center;border-top: 1px solid #8a8686;">
+				<div style="display: inline-block;width: 47%;color: #2281ec;border-right: 1px solid #8a8686;">
+					<div style="margin-top: 8px;margin-bottom: 6px;" class="clear-cart" data-dismiss="modal">确定</div>
 				</div>
 				<div style="display: inline-block;width: 47%;color: #2281ec;">
-					<div style="margin-top: 8px;margin-bottom: 6px;" class="clear-cart">确定</div>
+					<div style="margin-top: 8px;margin-bottom: 6px;" data-dismiss="modal">取消</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="alertModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document" style="top: 30%;position: absolute;width: 80;left: 10%;width: 80%;">
+			<div class="modal-content">
+				<!-- <div style="padding: 16px;position: relative;">
+					<i type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: absolute;top: 5px;right: 10px;">
+						<span aria-hidden="true">×</span>
+					</i>
+				</div> -->
+				<div class="modal-body" style="text-align: center;">
+					<span class="alertText" style="color:red;"></span>
 				</div>
 			</div>
 		</div>
@@ -95,6 +108,7 @@
 	<!-- 引用 goods-wrap.js -->
 	<script src="/static/js/goods-wrap.js"></script>
 	<script src="/static/js/cart.js"></script>
+	<script>var globalContext = {{.GlobalContext}}; var globalCart={};</script>
 	<script type="text/javascript">
 		doT.templateSettings = {
 			evaluate:	/\{\%([\s\S]+?)\%\}/g,

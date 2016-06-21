@@ -35,7 +35,6 @@
 				eval(trigger)();
 			}
 		});
-		$(".item-cart").click(editCart);
+		$(".item-cart-click").click(editCart);
 	</script>
-	<script>var globalContext = {{.GlobalContext}}; var globalCart=getCart()</script>
 </html>

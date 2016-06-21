@@ -55,7 +55,7 @@
 				{{range .GoodsList}}
 				<div class="goods">
 					<div class="cart-count-flag"> 
-						<div class="item-cart" goods-id="{{.Id}}" style="display:none"> 
+						<div class="item-cart item-cart-click" goods-id="{{.Id}}" style="display:none"> 
 							<i class="count"><span goods-id="{{.Id}}">0</span></i> 
 						</div>
 					</div>
@@ -71,7 +71,7 @@
 						</p>
 					</div> 
 					<div class="item-edit">
-						<div class="item-cart" goods-id="{{.Id}}" value=1>
+						<div class="item-cart item-cart-click" goods-id="{{.Id}}" value=1>
 							<div class="btn -purchase">
 								<i class="icon-plus"></i>
 							</div>
@@ -113,7 +113,7 @@
 						<span><del style="font-size: 10px;"></del></span>
 					</p> 
 					<div class="item-edit">
-						<div class="item-cart" value=-1 style="bottom: 30px;right: 58px;"> 
+						<div class="item-cart item-cart-click" value=-1 style="bottom: 30px;right: 58px;"> 
 							<div class="btn -purchase"> 
 								<i class="icon-minus"></i> 
 							</div> 
@@ -121,7 +121,7 @@
 						<div class="item-cart" style="bottom: 29px;right: 39px;"> 
 							<i class="count"><span>0</span></i> 
 						</div> 
-						<div class="item-cart" value=1 style="bottom: 30px;right: 8px;"> 
+						<div class="item-cart item-cart-click" value=1 style="bottom: 30px;right: 8px;"> 
 							<div class="btn -purchase"> 
 								<i class="icon-plus"></i> 
 							</div> 
@@ -160,4 +160,5 @@
 </script>
 <!-- <script src="js/goods-wrap.js"></script> -->
 <script src="/static/js/goods-wrap.js"></script>
+<script>var globalContext = {{.GlobalContext}}; var globalCart=getCart();initCart();</script>
 {{end}}
