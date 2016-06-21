@@ -5,7 +5,7 @@ package controller
 import (
 	"testing"
 
-	// . "global"
+	. "global"
 	"util"
 )
 
@@ -18,20 +18,20 @@ import (
 // 	}
 // }
 
-// func TestGenCartHtml(t *testing.T) {
-// 	context := util.NewContext(STATIC_PATH+"cart.html", "/cart/list")
-// 	index := CartController{}
-// 	err := index.GenCartIndexHtml(context)
-// 	if err != nil {
-// 		t.Fatal("err:", err)
-// 	}
-// }
-
-func TestCart(t *testing.T) {
+func TestGenCartHtml(t *testing.T) {
+	context := util.NewContext(STATIC_PATH+"cart.html", "/cart/list", "")
 	index := CartController{}
-	context := util.NewContext("", "/cart/list", `goods_list=%5B%7B%22goods_id%22%3A%221%22%2C%22selected%22%3A%221%22%2C%22goods_num%22%3A%229%22%7D%2C%7B%22goods_id%22%3A%222%22%2C%22selected%22%3A%221%22%2C%22goods_num%22%3A%226%22%7D%2C%7B%22goods_id%22%3A%223%22%2C%22selected%22%3A%221%22%2C%22goods_num%22%3A%2210%22%7D%2C%7B%22goods_id%22%3A%224%22%2C%22selected%22%3A%221%22%2C%22goods_num%22%3A%221%22%7D%5D`)
-	err := index.CartList(context)
+	err := index.GenCartIndexHtml(context)
 	if err != nil {
 		t.Fatal("err:", err)
 	}
 }
+
+//func TestCart(t *testing.T) {
+//	index := CartController{}
+//	context := util.NewContext("", "/cart/list", `goods_list=%5B%7B%22goods_id%22%3A%221%22%2C%22selected%22%3A%221%22%2C%22goods_num%22%3A%229%22%7D%2C%7B%22goods_id%22%3A%222%22%2C%22selected%22%3A%221%22%2C%22goods_num%22%3A%226%22%7D%2C%7B%22goods_id%22%3A%223%22%2C%22selected%22%3A%221%22%2C%22goods_num%22%3A%2210%22%7D%2C%7B%22goods_id%22%3A%224%22%2C%22selected%22%3A%221%22%2C%22goods_num%22%3A%221%22%7D%5D`)
+//	err := index.CartList(context)
+//	if err != nil {
+//		t.Fatal("err:", err)
+//	}
+//}
