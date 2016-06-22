@@ -89,5 +89,5 @@ func (CartController) CartList(ctx echo.Context) error {
 
 // 生成购物车页的 html 不提供外部接口
 func (CartController) GenCartIndexHtml(ctx echo.Context) error {
-	return util.Render(ctx, "cart/list", map[string]interface{}{})
+	return util.Render(ctx, "cart/list", "购物车", map[string]interface{}{})
 }

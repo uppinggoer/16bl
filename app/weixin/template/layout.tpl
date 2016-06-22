@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 	<!-- <title>便利</title> -->
-	<title>便利</title>
+	<title>{{.Title}}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 	<meta charset="utf-8">
 	<!-- <link rel="shortcut icon" href="/static/img/go.ico"> -->

@@ -47,5 +47,5 @@ func (IndexController) Index(ctx echo.Context) error {
 
 	// time.Sleep(3 * time.Second)
 	// return util.Success(ctx, homeData)
-	return util.Render(ctx, "home/index", homeData)
+	return util.Render(ctx, "home/index", "便利", homeData)
 }

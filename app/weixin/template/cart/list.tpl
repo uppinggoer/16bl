@@ -1,28 +1,23 @@
 {{define "content"}}
-	<div class="cat-title"> 
-		<div class="cat-title-inner"> 
-			<p style="padding-top:8px;"> 
-				<span>购物车</span>
-			</p>
-		</div>
-		<div class="cart" style="position: absolute;top: 18%;right: 8%;"> 
-			<button class="icon-trash" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#notice"/>
-		</div>
-	</div>
-
 	<!-- <div goods-list> -->
 	<div id="goods-list" class="goods-list cart-goodslist"> </div>
 	<script id="goods-list-tmpl" type="text/x-dot-template">
-		<div class="tip-outter"> 
-			<div class="tip-inner"> 
-				<p style="padding:3px;"> 
-					<span id="cart-tip" style="font-size:10px;font-family:行楷;">{%=it.tips%}</span>
-				</p>
+		<div class="cat-title"> 
+			<div class="tip-outter"> 
+				<div class="tip-inner"> 
+					<p style="padding:3px;"> 
+						<span id="cart-tip" style="font-size:10px;font-family:行楷;">{%=it.tips%}</span>
+					</p>
+				</div>
+			</div>
+			<div class="cart" style="position: absolute;top: 18%;right: 8%;"> 
+				<i class="icon-trash" data-toggle="modal" data-target="#notice"></i>
 			</div>
 		</div>
+
 		{% for(var goodsId in it["map"]) { %}
 		<div class="goods"> 
-			<div class="check" goods-id="{%=goodsId%}" style="background-color:{%? it["map"][goodsId]["selected"] == 0%}white{%??%}green{%?%}"> 
+			<div class="check" goods-id="{%=goodsId%}" style="background-color:{%? it["map"][goodsId]["selected"] == 0%}white{%??%}#40bb91{%?%}"> 
 				<i class="icon-ok" aria-hidden="true"></i> 
 			</div> 
 			<div style="width: 25%;display: inline-block;"> 
@@ -64,9 +59,9 @@
 			</div> 
 			<div class="info-inner"> 
 				<p>
-					<span style="font-size: 15px;color: grey;">全选</span>
-					<span style="font-size: 12px;padding-left: 8px;">总计:</span>
-					<span id="cart-cost" style="font-size: 12px;color: red;">￥0</span>
+					<span style="font-size: 13px;color: grey;padding-left: 7px;">全选</span>
+					<span style="font-size: 15px;padding-left: 10px;">总计:</span>
+					<span id="cart-cost" style="font-size: 13px;color: red;font-weight: 500;">￥0</span>
 				</p>
 			</div>
 			<div class="info-button">

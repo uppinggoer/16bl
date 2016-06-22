@@ -60,6 +60,7 @@ type footMentEntiy struct {
 type renderEntity struct {
 	GlobalContext map[string]interface{}
 	Content       interface{}
+	Title         string
 	FootMenu      []footMentEntiy
 }
 
@@ -75,11 +76,12 @@ var funcMap = template.FuncMap{
 
 // render html 输出
 // contentTpl 模板名  多个模板用,分割
-func Render(ctx echo.Context, contentTpl string, data interface{}) error {
+func Render(ctx echo.Context, contentTpl, title string, content interface{}) error {
 	tplInfo := renderEntity{}
 
 	// Content 元素
-	tplInfo.Content = data
+	tplInfo.Title = title
+	tplInfo.Content = content
 	tplInfo.GlobalContext = make(map[string]interface{})
 
 	// 填写下方导航
