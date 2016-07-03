@@ -1,3 +1,5 @@
+{{define "layout"}}
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -20,7 +22,7 @@
 	<script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 	<script src="http://cdn.bootcss.com/dot/1.0.3/doT.min.js"></script> 
 </head>
-<body>
+<body class="background">
 	{{template "content" .}}
 	{{template "bottom-navbar" .}}
 	<div id="cart-ball"></div>
@@ -38,3 +40,5 @@
 		$(".item-cart-click").click(editCart);
 	</script>
 </html>
+
+{{end}}

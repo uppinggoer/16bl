@@ -1,3 +1,6 @@
+<!-- 引入主框架 -->
+{{template "layout" .}}
+
 {{define "content"}}
 {{$globalContext := .GlobalContext}}
 
@@ -30,7 +33,7 @@
 {{end}}
 
 <!-- 上方导航栏 -->
-<div class="up-navbar container-outter">
+<div class="up-navbar container-outter foreground">
 	<div class="flexbox inner">
 		{{range .Nav}}
 		<a href="{{.Url}}">
@@ -44,14 +47,14 @@
 <!--商品列表 --> 
 <div class="goods-list">
 	{{range .Class}}
-	<div class="container-outter">
+	<div class="container-outter foreground">
 		<div class="inner">
 			<div class="desc" style="border-color:#{{.Color}};">
 				<span style="float:left;color:#{{.Color}}">{{.Name}}</span>
 				<a href="XXXX" style="float:right;">更多>></a>
 			</div>
 			<img class="banner" src="{{.Img}}"/>
-			<div class="goods-list" style="background-color:#EFEFEF;display:inline-block;">
+			<div class="goods-list background" style="display:inline-block;">
 				{{range .GoodsList}}
 				<div class="goods">
 					<div class="cart-count-flag"> 

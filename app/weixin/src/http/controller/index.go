@@ -38,7 +38,7 @@ func (IndexController) Index(ctx echo.Context) error {
 			if v, ok := goodsIdMap[goodsId]; ok {
 				classConf.GoodsList = append(classConf.GoodsList, *v)
 			} else {
-				// log id not exists
+				// goods id not exists
 			}
 		}
 

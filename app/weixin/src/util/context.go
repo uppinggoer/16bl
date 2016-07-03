@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"path"
 	"strings"
 
 	. "global"
@@ -98,7 +99,7 @@ func Render(ctx echo.Context, contentTpl, title string, content interface{}) err
 		Activite: false,
 		Icon:     "icon-list",
 		Id:       "list",
-		Url:      "www.baidu.com",
+		Url:      "/static/list.html",
 		Trigger:  "",
 		Name:     "超市",
 	})
@@ -114,21 +115,22 @@ func Render(ctx echo.Context, contentTpl, title string, content interface{}) err
 		Activite: false,
 		Icon:     "icon-user",
 		Id:       "user",
-		Url:      "www.baidu.com",
+		Url:      "/static/user.html",
 		Trigger:  "",
 		Name:     "我的",
 	})
 	tplInfo.FootMenu = foot
 
+	mainTpl := contentTpl
 	// 所有模板
-	contentTpl = "layout" + "," + contentTpl + "," + "home/bottom-nav"
+	contentTpl = contentTpl + "," + "layout" + "," + "home/bottom-nav"
 	// 为了使用自定义的模板函数，首先New一个以第一个模板文件名为模板名。
 	// 这样，在ParseFiles时，新返回的*Template便还是原来的模板实例
 	htmlFiles := strings.Split(contentTpl, ",")
 	for i, contentTpl := range htmlFiles {
 		htmlFiles[i] = TPL_PATH + contentTpl + ".tpl"
 	}
-	tpl, err := template.New("layout.tpl").Funcs(funcMap).ParseFiles(htmlFiles...)
+	tpl, err := template.New(path.Base(mainTpl) + ".tpl").Funcs(funcMap).ParseFiles(htmlFiles...)
 	if err != nil {
 		// objLog.Errorf("解析模板出错（ParseFiles）：[%q] %s\n", Request(ctx).RequestURI, err)
 		return err

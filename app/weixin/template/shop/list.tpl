@@ -20,7 +20,7 @@
 
 		{% for(var goodsId in it["map"]) { %}
 		<div class="goods"> 
-			<div class="check {%? it["map"][goodsId]["selected"] == 1%}appground{%??%}foreground{%?%}" goods-id="{%=goodsId%}"> 
+			<div class="check" goods-id="{%=goodsId%}" style="background-color:{%? it["map"][goodsId]["selected"] == 0%}white{%??%}#40bb91{%?%}"> 
 				<i class="icon-ok" aria-hidden="true"></i> 
 			</div> 
 			<div style="width: 25%;display: inline-block;"> 
