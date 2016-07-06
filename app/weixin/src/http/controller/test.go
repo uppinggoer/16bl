@@ -8,6 +8,8 @@ import (
 	"os"
 
 	"github.com/labstack/echo"
+	// "github.com/labstack/echo/engine/fasthttp"
+	// valhttp "github.com/valyala/fasthttp"
 )
 
 type TestController struct{}
@@ -23,5 +25,18 @@ func (TestController) Test(ctx echo.Context) error {
 	file, _ := os.Open(fileName)
 	data, _ := ioutil.ReadAll(file)
 
-	return ctx.JSONBlob(http.StatusOK, data)
+	// cookie := fasthttp.Cookie{&valhttp.Cookie{}}
+	// cookie.SetKey("zhima_debug")
+	// cookie.SetValue("1")
+	// ctx.SetCookie(&cookie)
+
+	// cookie := &echo.Cookie{}
+	// cookie.SetName("zhima_debug")
+	// cookie.SetValue("1")
+	if v, err := ctx.Cookie("zhima_debug"); nil == err {
+		if "1" == v.Value() {
+			return ctx.JSONBlob(http.StatusOK, data)
+		}
+	}
+	return ctx.HTML(http.StatusOK, string(data))
 }

@@ -9,11 +9,7 @@ type Goods struct {
 	Id           int64 `gorm:"primary_key"`
 	Name         string
 	Norms        string
-	StoreId      int64
-	StoreName    string
 	Unit         string
-	MinOrdernum  int64
-	MaxOrdernum  int64
 	Marketprice  int64
 	Price        int64
 	Costprice    int64
@@ -23,14 +19,13 @@ type Goods struct {
 	State        int8
 	Image        string
 	Desc         string
-	StcId        int64
+	ClassId      int64
 	Sort         int64
 	Barcode      string
 	Storage      int32
 	Addtime      int64
 	Edittime     int64  `json:"-"`
 	OpUser       string `json:"-"`
-	Mtime        string `json:"-"`
 }
 
 const (
@@ -71,4 +66,23 @@ func GetGoodsListById(goodsIdList []int64) (map[int64]*Goods, error) {
 	}
 
 	return goodsIdMap, nil
+}
+
+/**
+ * @abstract 根据id 列表获取商品信息
+ * @param goodsIdList
+ * @return map[int64]Goods
+ */
+func GetAllGoods() ([]*Goods, error) {
+	goodsList := []*Goods{}
+	sqlRet := DB.Find(&goodsList)
+	if nil != sqlRet.Error {
+		// log sqlRet.Error
+		return nil, RecordError
+	}
+	if 0 >= sqlRet.RowsAffected {
+		// log
+		return nil, RecordEmpty
+	}
+	return goodsList, nil
 }

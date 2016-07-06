@@ -57,7 +57,7 @@ func main() {
 
 	// 设置路由
 	e.Static("/static/", BASE_PATH+"/static")
-	e.File("/favicon.ico", BASE_PATH+"/static/img/go.ico")
+	e.File("/favicon.ico", BASE_PATH+"/static/img/16bl.ico")
 
 	// 配置server的log
 	var loggerConfig = middleware.LoggerConfig{

@@ -35,3 +35,21 @@ func TestCart(t *testing.T) {
 		t.Fatal("err:", err)
 	}
 }
+
+func TestShopList(t *testing.T) {
+	index := ShopController{}
+	context := util.NewContext("", "/shop/list", ``)
+	err := index.ShopList(context)
+	if err != nil {
+		t.Fatal("err:", err)
+	}
+}
+
+func TestTest(t *testing.T) {
+	index := TestController{}
+	context := util.NewContext("", "/test?file=text", ``)
+	err := index.Test(context)
+	if err != nil {
+		t.Fatal("err:", err)
+	}
+}

@@ -99,7 +99,7 @@ func Render(ctx echo.Context, contentTpl, title string, content interface{}) err
 		Activite: false,
 		Icon:     "icon-list",
 		Id:       "list",
-		Url:      "/static/list.html",
+		Url:      "/shop/list",
 		Trigger:  "",
 		Name:     "超市",
 	})
