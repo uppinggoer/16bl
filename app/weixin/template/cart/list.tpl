@@ -68,7 +68,7 @@
 				</p>
 			</div>
 			<div class="info-button appground">
-				<span style="color: white;font-size: 15px;">结算</span>
+				<a style="color: white;font-size: 15px;" href="/static/prepareOrder.html">结算</a>
 			</div>
 		</div>
 	</div>
@@ -108,20 +108,6 @@
 	<script src="/static/js/cart.js"></script>
 	<script>var globalContext = {{.GlobalContext}}; var globalCart={};</script>
 	<script type="text/javascript">
-		doT.templateSettings = {
-			evaluate:	/\{\%([\s\S]+?)\%\}/g,
-			interpolate:/\{\%=([\s\S]+?)\%\}/g,
-			encode:		/\{\%!([\s\S]+?)\%\}/g,
-			use:		/\{\%#([\s\S]+?)\%\}/g,
-			define:		/\{\%##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\%\}/g,
-			conditional:/\{\%\?(\?)?\s*([\s\S]*?)\s*\%\}/g,
-			iterate:	/\{\%~\s*(?:\}\}|([\s\S]+?)\s*\:\s*([\w$]+)\s*(?:\:\s*([\w$]+))?\s*\%\})/g,
-			varname: 'it',
-			strip: true,
-			append: true,
-			selfcontained: false
-		};
-
 		$("#foot-menu").find(".active").removeClass("active");
 		$("#foot-menu").find("#cart").addClass("active");
 		$(".clear-cart").click(cleanCart);

@@ -12,7 +12,7 @@ type Goods struct {
 	Unit         string
 	Marketprice  int64
 	Price        int64
-	Costprice    int64
+	Costprice    int64 `json:"-"`
 	Salenum      int64
 	MonthSalenum int64
 	WeekSalenum  int64
@@ -70,12 +70,18 @@ func GetGoodsListById(goodsIdList []int64) (map[int64]*Goods, error) {
 
 /**
  * @abstract 根据id 列表获取商品信息
- * @param goodsIdList
+ * @param cond map[string]string 条件
  * @return map[int64]Goods
  */
-func GetAllGoods() ([]*Goods, error) {
+func GetAllGoods(cond *map[string]string) ([]*Goods, error) {
 	goodsList := []*Goods{}
-	sqlRet := DB.Find(&goodsList)
+
+	dbBuild := DB
+	// 未做校验
+	for k, v := range *cond {
+		dbBuild = dbBuild.Where(k+"=?", v)
+	}
+	sqlRet := dbBuild.Find(&goodsList)
 	if nil != sqlRet.Error {
 		// log sqlRet.Error
 		return nil, RecordError

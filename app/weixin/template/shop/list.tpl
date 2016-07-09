@@ -54,7 +54,7 @@
         </div>
         <div class="row" style="margin-top: 30px;">
             <div class="col-xs-3" id="myScrollspy" style="font-size: 12px;width: 27%;">
-                <ul class="nav nav-tabs nav-stacked background affix-top" data-spy="affix" data-offset-top="125" style="width: 25%;position: fixed;text-align: center;">
+                <ul class="nav nav-tabs nav-stacked background affix-top" data-spy="affix" data-offset-top="125" style="width: 26%;position: fixed;text-align: center;">
                     {{range $idx,$classInfo := .ClassList}}
                     <li class="{{if eq $idx 0}} active {{end}}">
                         <a style="color:black;border: none;" href="#section-{{$idx}}">
@@ -64,7 +64,7 @@
                     {{end}}
                 </ul>
             </div>
-            <div class="col-xs-9" style="width: 71%;padding-left: 2%;border-left: 1px solid #afabab;margin-left: 3px;">
+            <div class="col-xs-9" style="width: 71%;padding-left: 1%;border-left: 1px solid #afabab;margin-left: 3px;">
                 {{range $idx,$classInfo := .ClassList}}
                 <div id="section-{{$idx}}">
                     <div style="width: 100%;padding: 6px 0px 3px 10px;" class="background">
@@ -76,7 +76,7 @@
                     <div class="goods" style="width: 100%;padding:7% 0px 3%;border-bottom: 2px solid #f7f5f5;"> 
                         <div style="width: 38%;display: inline-block;vertical-align: top;margin-right: 3%;"> 
                             <a data-toggle="modal" data-target="#detailModelOutter" data-whatever="{{addGlobalContext $globalContext $goodsInfo.Id $goodsInfo}}">
-                                <img src="{{$goodsInfo.Image}}" style="width: 100%;height: 72px;padding: 0% 13%;">
+                                <img src="{{$goodsInfo.Image}}" style="width: 100%;height:85px;">
                             </a>
                         </div>
                         <div class="inner" style="display: inline-block;width: 50%;vertical-align: top;position: relative;height: 90px;">

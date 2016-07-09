@@ -48,18 +48,35 @@ func (self *sortFactory) Less(i, j int) bool {
 	}
 
 	// 进行排序
+	var flag int8
 	switch valueI.Kind() {
 	case reflect.String:
-		return strings.Compare(valueI.String(), valueJ.String()) < 0 == self.Asc
+		flag = int8(strings.Compare(valueI.String(), valueJ.String()))
+		// return < 0 == self.Asc
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		return valueI.Int() < valueJ.Int() == self.Asc
+		flag = int8(valueI.Int() - valueJ.Int())
+		// return valueI.Int() < valueJ.Int() == self.Asc
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		return valueI.Uint() < valueJ.Uint() == self.Asc
+		flag = int8(valueI.Uint() - valueJ.Uint())
+		// return valueI.Uint() < valueJ.Uint() == self.Asc
 	case reflect.Float32, reflect.Float64:
-		return valueI.Float() < valueJ.Float() == self.Asc
+		if valueI.Float() == valueJ.Float() {
+			flag = 0
+		} else if valueI.Float() > valueJ.Float() {
+			flag = 1
+		} else {
+			flag = -1
+		}
+		// return valueI.Float() < valueJ.Float() == self.Asc
 	default:
 		// 暂不支持
+		flag = 0
+	}
+
+	if 0 == flag {
 		return (i < j) == self.Asc
+	} else {
+		return i > 0 == self.Asc
 	}
 }
 

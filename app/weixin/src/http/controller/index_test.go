@@ -36,6 +36,15 @@ func TestCart(t *testing.T) {
 	}
 }
 
+func TestPrepareOrder(t *testing.T) {
+	index := OrderController{}
+	context := util.NewContext("", "/order/prepare", `goods_list=%5B%7B%22goods_id%22%3A%221%22%2C%22selected%22%3A%221%22%2C%22goods_num%22%3A%222%22%7D%2C%7B%22goods_id%22%3A%222%22%2C%22selected%22%3A%221%22%2C%22goods_num%22%3A%224%22%7D%2C%7B%22goods_id%22%3A%223%22%2C%22selected%22%3A%221%22%2C%22goods_num%22%3A%222%22%7D%5D`)
+	err := index.PrepareOrder(context)
+	if err != nil {
+		t.Fatal("err:", err)
+	}
+}
+
 func TestShopList(t *testing.T) {
 	index := ShopController{}
 	context := util.NewContext("", "/shop/list", ``)

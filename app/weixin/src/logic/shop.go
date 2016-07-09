@@ -20,7 +20,10 @@ func GetShopData(ctx echo.Context) (classList []*daoSql.GoodsClass, classIdMap m
 	classIdMap = make(map[int64][]*daoSql.Goods)
 
 	// 获取 所有商品 信息
-	goodsList, err := daoSql.GetAllGoods()
+	cond := map[string]string{
+		"state": "1",
+	}
+	goodsList, err := daoSql.GetAllGoods(&cond)
 	if nil != err {
 		return
 	}
