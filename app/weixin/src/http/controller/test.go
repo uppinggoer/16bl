@@ -16,7 +16,7 @@ type TestController struct{}
 
 // 注册路由
 func (self TestController) RegisterRoute(e *echo.Group) {
-	e.Get("/test", echo.HandlerFunc(self.Test))
+	e.Any("/test", echo.HandlerFunc(self.Test))
 }
 
 // 测试框架入口
@@ -24,6 +24,8 @@ func (TestController) Test(ctx echo.Context) error {
 	fileName := "/tmp/" + ctx.QueryParam("file")
 	file, _ := os.Open(fileName)
 	data, _ := ioutil.ReadAll(file)
+
+	ctx.Response().Header().Set("Access-Control-Allow-Origin", "*")
 
 	// cookie := fasthttp.Cookie{&valhttp.Cookie{}}
 	// cookie.SetKey("zhima_debug")

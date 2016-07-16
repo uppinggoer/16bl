@@ -38,7 +38,7 @@ func (CartController) CartList(ctx echo.Context) error {
 	// 收集 goodsId
 	goodsIdList := []int64{}
 	for _, goodsInfo := range goodsList {
-		goodsId, err := strconv.ParseInt(goodsInfo["goods_id"], 10, 0)
+		goodsId, err := strconv.ParseInt(goodsInfo["goods_id"], 10, 64)
 		if nil != err {
 			// log
 		} else {
@@ -64,15 +64,17 @@ func (CartController) CartList(ctx echo.Context) error {
 	} else {
 		cartData.Alert = ""
 	}
+
+	// 遍历商品
 	for _, goodsInfo := range goodsList {
-		goodsId, err := strconv.ParseInt(goodsInfo["goods_id"], 10, 0)
+		goodsId, err := strconv.ParseInt(goodsInfo["goods_id"], 10, 64)
 		if nil != err {
 			// log
 			continue
 		}
 
 		var selected = goodsInfo["selected"]
-		goodsNum, _ := strconv.ParseInt(goodsInfo["goods_num"], 10, 0)
+		goodsNum, _ := strconv.ParseInt(goodsInfo["goods_num"], 10, 64)
 		if v, ok := goodsIdMap[goodsId]; ok {
 			if goodsNum > int64(v.Storage) {
 				goodsNum = int64(v.Storage)

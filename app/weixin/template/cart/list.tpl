@@ -68,7 +68,7 @@
 				</p>
 			</div>
 			<div class="info-button appground">
-				<a style="color: white;font-size: 15px;" href="/static/prepareOrder.html">结算</a>
+				<a style="color: white;font-size: 15px;" href="/static/prepare_order.html">结算</a>
 			</div>
 		</div>
 	</div>
@@ -83,20 +83,6 @@
 				</div>
 				<div style="display: inline-block;width: 47%;color: #2281ec;">
 					<div style="margin-top: 8px;margin-bottom: 6px;" data-dismiss="modal">取消</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="modal fade" id="alertModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-		<div class="modal-dialog" role="document" style="top: 30%;position: absolute;width: 80;left: 10%;width: 80%;">
-			<div class="modal-content">
-				<!-- <div style="padding: 16px;position: relative;">
-					<i type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: absolute;top: 5px;right: 10px;">
-						<span aria-hidden="true">×</span>
-					</i>
-				</div> -->
-				<div class="modal-body" style="text-align: center;">
-					<span class="alertText" style="color:red;"></span>
 				</div>
 			</div>
 		</div>

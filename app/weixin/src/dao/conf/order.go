@@ -4,15 +4,22 @@ import (
 	"util"
 )
 
-// 读取 cart.yaml的数据
-func OrderConf() (Cart, error) {
-	var confName = "cart"
+// 订单配置
+type Order struct {
+	Tips         string
+	Alert        string
+	StorageAlert string
+}
 
-	cart := new(Cart)
-	err := util.AppData(confName, cart)
+// 读取 cart.yaml的数据
+func OrderConf() (Order, error) {
+	var confName = "order"
+
+	order := new(Order)
+	err := util.AppData(confName, order)
 	if nil != err {
-		return *cart, err
+		return *order, err
 	}
 
-	return *cart, err
+	return *order, err
 }

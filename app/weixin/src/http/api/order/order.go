@@ -12,6 +12,12 @@ type Order struct {
 	OrderBase    `json:"orderInfo"`
 }
 
+type OrderList struct {
+	Base    string   `json:"base"`
+	HasMore bool     `json:"hasMore"`
+	List    []*Order `json:"list"`
+}
+
 type OrderBase struct {
 	Order     *daoSql.Order        `json:"order"` // 订单信息
 	GoodsList []*daoSql.OrderGoods `json:"goodsList"`

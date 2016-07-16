@@ -54,10 +54,28 @@ func TestShopList(t *testing.T) {
 	}
 }
 
+func TestMyOrderList(t *testing.T) {
+	index := OrderController{}
+	context := util.NewContext("", "/order/list", ``)
+	err := index.MyOrderList(context)
+	if err != nil {
+		t.Fatal("err:", err)
+	}
+}
+
 func TestTest(t *testing.T) {
 	index := TestController{}
 	context := util.NewContext("", "/test?file=text", ``)
 	err := index.Test(context)
+	if err != nil {
+		t.Fatal("err:", err)
+	}
+}
+
+func TestGenOrderListHtml(t *testing.T) {
+	context := util.NewContext(STATIC_PATH+"orderList.html", "/order/list", "")
+	index := OrderController{}
+	err := index.GenOrderListHtml(context)
 	if err != nil {
 		t.Fatal("err:", err)
 	}

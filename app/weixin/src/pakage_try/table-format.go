@@ -47,10 +47,9 @@ func main() {
 			filedName := arrField[0][1 : stop-1]
 			arrName := strings.Split(filedName, "_")
 
-			arrName[0] = strings.ToUpper(arrName[0][0:1]) + arrName[0][1:]
-			if 1 < len(arrName) {
-				arrName[1] = strings.ToUpper(arrName[1][0:1]) + arrName[1][1:]
-				arrName[0] += arrName[1]
+			strName := ""
+			for _, name := range arrName {
+				strName += strings.ToUpper(name[0:1]) + name[1:]
 			}
 			// fmt.Println(arrName[0])
 
@@ -59,7 +58,7 @@ func main() {
 			arrField[1] = typeMap[arrField[1]]
 			// fmt.Println(arrField[1])
 
-			rowInfo = arrName[0] + " " + arrField[1]
+			rowInfo = strName + " " + arrField[1]
 			mapRow[filedName] = rowInfo
 			arrRow = append(arrRow, filedName)
 		}

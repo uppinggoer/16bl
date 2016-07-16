@@ -6,8 +6,8 @@ import (
 
 // 购物车配置
 type Cart struct {
-	Tips  string `json:"banner"`
-	Alert string `json:"nav"`
+	Tips  string
+	Alert string
 }
 
 // 读取 cart.yaml的数据
