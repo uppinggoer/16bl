@@ -3,7 +3,7 @@ package controller
 import (
 	// "fmt"
 
-	apiIndex "http/api/index"
+	apiIndex "http/api"
 	"logic"
 	"util"
 
@@ -29,23 +29,24 @@ func (IndexController) Index(ctx echo.Context) error {
 	homeData.Banner = homeConf.Banner
 	homeData.Nav = homeConf.Nav
 	for _, itemConf := range homeConf.Class {
-		classConf := apiIndex.Class{}
+		classConf := apiIndex.HomeClass{}
 		classConf.Img = itemConf.Img
 		classConf.Name = itemConf.Name
 		classConf.Color = itemConf.Color
 
 		for _, goodsId := range itemConf.GoodsIdList {
 			if v, ok := goodsIdMap[goodsId]; ok {
-				classConf.GoodsList = append(classConf.GoodsList, *v)
+				classConf.GoodsList = append(classConf.GoodsList, &apiIndex.Goods{Goods: v})
 			} else {
 				// goods id not exists
 			}
 		}
 
-		homeData.Class = append(homeData.Class, classConf)
+		homeData.Class = append(homeData.Class, &classConf)
 	}
 
 	// time.Sleep(3 * time.Second)
 	// return util.Success(ctx, homeData)
+	homeData.Format()
 	return util.Render(ctx, "home/index", "便利", homeData)
 }

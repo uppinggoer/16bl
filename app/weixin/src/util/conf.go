@@ -9,7 +9,7 @@ import (
 
 	. "global"
 
-	"gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v2"
 	"menteslibres.net/gosexy/dig"
 )
 
@@ -135,6 +135,7 @@ func AppData(confName string, data interface{}) error {
 			if err != nil {
 				return FileReadFail
 			}
+
 			yaml.Unmarshal(confData, data)
 		}
 	} else {

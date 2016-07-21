@@ -80,6 +80,12 @@ var funcMap = template.FuncMap{
 func Render(ctx echo.Context, contentTpl, title string, content interface{}) error {
 	tplInfo := renderEntity{}
 
+	// 如果是debug 打印 json
+	if v, err := ctx.Cookie("zhima_debug"); nil == err {
+		if "1" == v.Value() {
+			return Success(ctx, content)
+		}
+	}
 	// Content 元素
 	tplInfo.Title = title
 	tplInfo.Content = content
@@ -151,9 +157,9 @@ func executeTpl(ctx echo.Context, tpl *template.Template, data interface{}) erro
 	if jsTpl := tpl.Lookup("css"); jsTpl == nil {
 		tpl.Parse(`{{define "css"}}{{end}}`)
 	}
-
 	buf := new(bytes.Buffer)
 	err := tpl.Execute(buf, data)
+
 	if err != nil {
 		// objLog.Errorln("excute template error:", err)
 		return err

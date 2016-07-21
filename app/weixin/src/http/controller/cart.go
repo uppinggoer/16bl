@@ -1,13 +1,10 @@
 package controller
 
 import (
-	"encoding/json"
 	"fmt"
-	"strconv"
 
 	daoConf "dao/conf"
-	. "global"
-	apiIndex "http/api/cart"
+	apiIndex "http/api"
 	"logic"
 	"util"
 
@@ -23,38 +20,26 @@ func (self CartController) RegisterRoute(e *echo.Group) {
 
 // 购物车 首页
 func (CartController) CartList(ctx echo.Context) error {
-	goodsListStr := ctx.FormValue("goods_list")
-
-	goodsList := []map[string]string{}
-	err := json.Unmarshal([]byte(goodsListStr), &goodsList)
-	if err != nil {
+	goodsList, err := getCartGoodsList(ctx)
+	if nil != err {
 		// log
 		return util.Fail(ctx, 10, err.Error())
 	}
-	if 0 >= len(goodsList) {
-		return util.Fail(ctx, 10, CartEmpty.Error())
+	// 收集 goodsId
+	goodsIdList := []uint64{}
+	for _, goodsInfo := range goodsList {
+		goodsIdList = append(goodsIdList, goodsInfo.GoodsId)
 	}
 
-	// 收集 goodsId
-	goodsIdList := []int64{}
-	for _, goodsInfo := range goodsList {
-		goodsId, err := strconv.ParseInt(goodsInfo["goods_id"], 10, 64)
-		if nil != err {
-			// log
-		} else {
-			goodsIdList = append(goodsIdList, goodsId)
-		}
-	}
 	// 获取 goodsId 信息
-	goodsException, goodsIdMap, err := logic.GetCartInfo(goodsIdList)
-	if nil != err {
-		return err
-	}
+	goodsException, goodsIdMap, _ := logic.GetCartInfo(goodsIdList)
+	// 校正库存
+	logic.VerifyGoodsNum(goodsIdMap, goodsList)
 
 	cartConf, err := daoConf.CartConf()
 	if nil != err {
 		// log
-		return err
+		return util.Fail(ctx, 10, err.Error())
 	}
 
 	cartData := apiIndex.Cart{}
@@ -65,27 +50,22 @@ func (CartController) CartList(ctx echo.Context) error {
 		cartData.Alert = ""
 	}
 
-	// 遍历商品
+	// 遍历商品 填充接口数据
 	for _, goodsInfo := range goodsList {
-		goodsId, err := strconv.ParseInt(goodsInfo["goods_id"], 10, 64)
-		if nil != err {
-			// log
-			continue
-		}
-
-		var selected = goodsInfo["selected"]
-		goodsNum, _ := strconv.ParseInt(goodsInfo["goods_num"], 10, 64)
-		if v, ok := goodsIdMap[goodsId]; ok {
-			if goodsNum > int64(v.Storage) {
-				goodsNum = int64(v.Storage)
+		if v, ok := goodsIdMap[goodsInfo.GoodsId]; ok {
+			goodsTmp := apiIndex.CartGoods{
+				GoodsInfo: &apiIndex.Goods{Goods: v},
+				Selected:  util.Itoa(goodsInfo.Selected),
+				GoodsNum:  util.Itoa(goodsInfo.GoodsNum),
 			}
-			goodsTmp := apiIndex.Goods{GoodsInfo: *v, Selected: selected, GoodsNum: strconv.FormatInt(goodsNum, 10)}
-			cartData.GoodsList = append(cartData.GoodsList, goodsTmp)
+			cartData.GoodsList = append(cartData.GoodsList, &goodsTmp)
 		} else {
 			// log
 			continue
 		}
 	}
+
+	cartData.Format()
 	return util.Success(ctx, cartData)
 }
 

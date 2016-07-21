@@ -3,18 +3,21 @@ package sql
 import . "global"
 
 type OrderGoods struct {
-	Id               int64 `gorm:"primary_key" json:"-"`
-	OrderId          int64 `json:"-"`
-	BuyerId          int64 `json:"-"`
-	GoodsId          int64
+	// GoodsCostprice   int32
+	Id               uint64 `gorm:"primary_key" json:"-"`
+	OrderId          uint64 `json:"-"`
+	MemberId         uint64 `json:"-"`
+	StoreId          uint64
+	GoodsId          uint64
+	ClassId          uint64
 	GoodsName        string
 	GoodsNorms       string
 	GoodsImage       string
 	GoodsUnit        string
-	GoodsNum         int64
-	GoodsPrice       int
-	GoodsMarketprice int
-	GoodsCostprice   int `json:"-"`
+	GoodsNum         uint16
+	GoodsPrice       uint64
+	GoodsMarketprice uint64
+	GoodsCostprice   uint64 `json:"-"`
 }
 
 /**
@@ -22,7 +25,7 @@ type OrderGoods struct {
  * @param goodsIdList
  * @return map[int64]Goods
  */
-func GetOrderGoodsMap(orderIdList []int64) (map[int64][]*OrderGoods, error) {
+func GetOrderGoodsMap(orderIdList []uint64) (map[uint64][]*OrderGoods, error) {
 	if 0 >= len(orderIdList) {
 		// log
 		return nil, RecordEmpty
@@ -39,7 +42,7 @@ func GetOrderGoodsMap(orderIdList []int64) (map[int64][]*OrderGoods, error) {
 		return nil, RecordEmpty
 	}
 
-	goodsIdMap := map[int64][]*OrderGoods{}
+	goodsIdMap := map[uint64][]*OrderGoods{}
 	for _, goodsInfo := range goodsList {
 		goodsIdMap[goodsInfo.OrderId] = append(goodsIdMap[goodsInfo.OrderId], goodsInfo)
 	}

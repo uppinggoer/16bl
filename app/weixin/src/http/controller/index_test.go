@@ -29,7 +29,7 @@ func TestGenCartHtml(t *testing.T) {
 
 func TestCart(t *testing.T) {
 	index := CartController{}
-	context := util.NewContext("", "/cart/list", `goods_list=%5B%7B%22goods_id%22%3A%221%22%2C%22selected%22%3A%221%22%2C%22goods_num%22%3A%229%22%7D%2C%7B%22goods_id%22%3A%222%22%2C%22selected%22%3A%221%22%2C%22goods_num%22%3A%226%22%7D%2C%7B%22goods_id%22%3A%223%22%2C%22selected%22%3A%221%22%2C%22goods_num%22%3A%2210%22%7D%2C%7B%22goods_id%22%3A%224%22%2C%22selected%22%3A%221%22%2C%22goods_num%22%3A%221%22%7D%5D`)
+	context := util.NewContext("", "/cart/list", `goods_list=[{"goods_id":"102","selected":"1","goods_num":"2"},{"goods_id":"104","selected":"1","goods_num":"2"}]`)
 	err := index.CartList(context)
 	if err != nil {
 		t.Fatal("err:", err)
@@ -38,8 +38,26 @@ func TestCart(t *testing.T) {
 
 func TestPrepareOrder(t *testing.T) {
 	index := OrderController{}
-	context := util.NewContext("", "/order/prepare", `goods_list=%5B%7B%22goods_id%22%3A%221%22%2C%22selected%22%3A%221%22%2C%22goods_num%22%3A%222%22%7D%2C%7B%22goods_id%22%3A%222%22%2C%22selected%22%3A%221%22%2C%22goods_num%22%3A%224%22%7D%2C%7B%22goods_id%22%3A%223%22%2C%22selected%22%3A%221%22%2C%22goods_num%22%3A%222%22%7D%5D`)
+	context := util.NewContext("", "/order/prepare", `goods_list=[{"goods_id":"102","selected":"1","goods_num":"20000"},{"goods_id":"103","selected":"1","goods_num":"4"},{"goods_id":"104","selected":"1","goods_num":"2"}]`)
 	err := index.PrepareOrder(context)
+	if err != nil {
+		t.Fatal("err:", err)
+	}
+}
+func TestDoOrder(t *testing.T) {
+	index := OrderController{}
+	context := util.NewContext("", "/order/do_order", `goods_list=[{"goods_id":"101","selected":"1","goods_num":"1"},{"goods_id":"102","selected":"1","goods_num":"2"}]`)
+	err := index.DoOrder(context)
+	if err != nil {
+		t.Fatal("err:", err)
+	}
+}
+func TestDetail(t *testing.T) {
+	index := OrderController{}
+	context := util.NewContext("", "/order/do_order", `goods_list=[{"goods_id":"101","selected":"1","goods_num":"1"},{"goods_id":"102","selected":"1","goods_num":"2"}]`)
+	// context.Request().Header().Set("cookie", "zhima_debug=1")
+
+	err := index.Detail(context)
 	if err != nil {
 		t.Fatal("err:", err)
 	}

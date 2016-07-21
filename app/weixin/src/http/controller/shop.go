@@ -3,7 +3,7 @@ package controller
 import (
 	// . "global"
 
-	apiIndex "http/api/shop"
+	apiIndex "http/api"
 	"logic"
 	"util"
 
@@ -28,14 +28,17 @@ func (ShopController) ShopList(ctx echo.Context) error {
 	cartData := apiIndex.Shop{}
 	for _, item := range classList {
 		classItem := apiIndex.Class{
-			ClassName: item.Name,
-			ClassId:   item.Id,
+			ClassName: item.ClassName,
+			ClassId:   item.ClassId,
 		}
-		if v, ok := goodsIdMap[item.Id]; ok {
-			classItem.GoodsList = v
+		if v, ok := goodsIdMap[item.ClassId]; ok {
+			classItem.GoodsList = make([]*apiIndex.Goods, len(v))
+			for idx, goodsItem := range v {
+				classItem.GoodsList[idx] = &apiIndex.Goods{Goods: goodsItem}
+			}
 		}
 
-		cartData.ClassList = append(cartData.ClassList, classItem)
+		cartData.ClassList = append(cartData.ClassList, &classItem)
 	}
 
 	// return util.Success(ctx, cartData)

@@ -1,43 +1,57 @@
 package sql
 
 import (
+	"encoding/json"
+	"fmt"
 	. "global"
+	"math/rand"
+	"strconv"
 	"time"
 )
 
 type Order struct {
-	OrderId           int64 `gorm:"primary_key"`
+	OrderId           uint64 `gorm:"primary_key"`
 	OrderSn           string
-	StoreId           int64
-	MemberId          int64  `json:"-"`
-	AddressId         int32  `json:"-"`
-	AddTime           int64  `json:"-"`
-	AddTimeStr        string `gorm:"-"`
-	ExpectTime        int64  `json:"-"`
-	ExpectTimeStr     string `gorm:"-"`
-	ShippingTime      int64  `json:"-"`
-	ShippingTimeStr   string `gorm:"-"`
-	FinishedTime      int64  `json:"-"`
-	FinishedTimeStr   string `gorm:"-"`
-	EvaluationTime    int64  `json:"-"`
-	EvaluationTimeStr string `gorm:"-"`
-	PaySn             int64  `json:"-"`
-	PaymentTime       int64  `json:"-"`
-	PaymentTimeStr    string `gorm:"-"`
+	StoreId           uint64
+	MemberId          uint64
+	AddressId         uint64
 	ReciverName       string
 	ReciverMobile     string
 	OrderMessage      string
-	DeliveryScore     int8
-	CostAmount        int
-	Amount            int64
-	MarketOrderAmount int64
-	CostOrderAmount   int64
-	OrderAmount       int64
-	OrderState        int32
-	CancelFlag        int8
-	Ext               string `json:"-"`
-	ExtInfo           string `gorm:"-"`
+	Score             uint8 `json:"-"`
+	PaySn             string
+	CostAmount        uint64 `json:"-"`
+	Amount            uint64
+	MarketOrderAmount uint64
+	CostOrderAmount   uint64 `json:"-"`
+	OrderAmount       uint64
+	OrderState        uint16
+	CancelFlag        uint8
+	AddTime           uint64   `json:"-"`
+	ExpectTime        uint64   `json:"-"`
+	ShippingTime      uint64   `json:"-"`
+	FinishedTime      uint64   `json:"-"`
+	EvaluationTime    uint64   `json:"-"`
+	PaymentTime       uint64   `json:"-"`
+	Ext               string   `json:"-"`
+	ExtInfo           OrderExt `gorm:"-"`
 }
+type OrderExt struct {
+	GoodsList       []uint64 `json:"goodsList"`
+	CancelReason    string   `json:"cancelReason"`
+	NotCancelReason string   `json:"notCancelReason"`
+	Evaluate        string   `json:"evaluate"`
+	AddressInfo     *Address `json:"addressInfo"`
+}
+
+const (
+	OrderStateNew      = 0  // 新订单，未付款
+	OrderStatePay      = 10 // 新订单，已支付
+	OrderStateOrder    = 20 // 已接单
+	OrderStateSend     = 30 // 已发货
+	OrderStateSuccess  = 40 // 已收货，交易成功；已送达
+	OrderStateEvaluate = 50 // 已评价
+)
 
 func (this *Order) TableName() string {
 	return "order"
@@ -62,7 +76,7 @@ func GetListById(uid, baseId, rn int) ([]*Order, error) {
 	if 0 < baseId {
 		dbBuild = dbBuild.Where("order_id < ?", baseId)
 	}
-	sqlRet := dbBuild.Where("buyer_id = ?", uid).Order("order_id desc").Limit(rn).Find(&orderList)
+	sqlRet := dbBuild.Where("member_id = ?", uid).Order("order_id desc").Limit(rn).Find(&orderList)
 	if nil != sqlRet.Error {
 		// log sqlRet.Error
 		return nil, RecordError
@@ -80,9 +94,27 @@ func GetListById(uid, baseId, rn int) ([]*Order, error) {
 }
 
 func (self *Order) Filter() {
-	self.OrderTimeStr = time.Unix(self.OrderTime, 0).Format("2006-01-02 15:04:05")
-	self.ExpectTimeStr = time.Unix(self.ExpectTime, 0).Format("2006-01-02 15:04:05")
-	self.ConfirmTimeStr = time.Unix(self.ConfirmTime, 0).Format("2006-01-02 15:04:05")
-	self.FinishedTimeStr = time.Unix(self.FinishedTime, 0).Format("2006-01-02 15:04:05")
-	self.PaymentTimeStr = time.Unix(self.PaymentTime, 0).Format("2006-01-02 15:04:05")
+	// 格式化
+	json.Unmarshal([]byte(self.Ext), &self.ExtInfo)
+}
+
+// 获取订单 sn
+func GenOrderSn(storeId, uid uint64) string {
+	str := strconv.Itoa(rand.Intn(89) + 10)
+	str += fmt.Sprintf("%d", (time.Now().Unix()-1467302400)/60)
+	str += fmt.Sprintf("%02d", rand.Intn(90)+9)
+	str += fmt.Sprintf("%02d", uid/100)
+
+	return str
+}
+
+// 获取支付订单 sn
+func GenPaySn(storeId, uid uint64) string {
+	// 前面部分主要为了跟踪订单及排序
+	str := strconv.Itoa(rand.Intn(89) + 10)
+	str += fmt.Sprintf("%010d", time.Now().Unix())
+	str += fmt.Sprintf("%03d", time.Now().Nanosecond())
+	str += fmt.Sprintf("%03d", uid/1000)
+
+	return str
 }

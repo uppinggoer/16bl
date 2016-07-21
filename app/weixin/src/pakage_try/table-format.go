@@ -7,12 +7,29 @@ import (
 	"strings"
 )
 
-var typeMap = map[string]string{
-	"mediumint": "int32",
-	"tinyint":   "int8",
-	"int":       "int64",
-	"varchar":   "string",
-	"timestamp": "string",
+var typeMap = map[string]map[string]string{
+	"mediumint": map[string]string{
+		"unsigned": "uint32",
+		"signed":   "int32",
+	},
+	"smallint": map[string]string{
+		"unsigned": "uint16",
+		"signed":   "int16",
+	},
+	"tinyint": map[string]string{
+		"unsigned": "uint8",
+		"signed":   "int8",
+	},
+	"int": map[string]string{
+		"unsigned": "uint64",
+		"signed":   "int64",
+	},
+	"varchar": map[string]string{
+		"signed": "string",
+	},
+	"timestamp": map[string]string{
+		"signed": "string",
+	},
 }
 
 func main() {
@@ -53,9 +70,15 @@ func main() {
 			}
 			// fmt.Println(arrName[0])
 
+			strLine = strings.ToLower(strLine)
+			intType := "signed"
+			if strings.Contains(strLine, "unsigned") {
+				intType = "unsigned"
+			}
+
 			// type
 			arrField[1] = strings.Split(arrField[1], "(")[0]
-			arrField[1] = typeMap[arrField[1]]
+			arrField[1] = typeMap[arrField[1]][intType]
 			// fmt.Println(arrField[1])
 
 			rowInfo = strName + " " + arrField[1]

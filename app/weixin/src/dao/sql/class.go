@@ -6,12 +6,14 @@ import (
 )
 
 type GoodsClass struct {
-	Id        int64 `gorm:"primary_key"`
-	Name      string
+	ClassId   uint64 `gorm:"primary_key"`
+	ClassName string
+	Level     uint8
 	ParentId  int64
-	Sort      int8
-	OpUser    string `json:"-"`
-	UpdatedAt string `json:"-"`
+	StcState  uint8
+	StoreId   int64
+	Sort      uint8
+	StcImage  string
 }
 
 func (this *GoodsClass) TableName() string {
@@ -23,7 +25,7 @@ func (this *GoodsClass) TableName() string {
  * @param classIdList
  * @return map[int64]Goods
  */
-func GetClassListById(classIdList []int64) (map[int64]*GoodsClass, error) {
+func GetClassListById(classIdList []uint64) (map[uint64]*GoodsClass, error) {
 	if 0 >= len(classIdList) {
 		// log
 		return nil, RecordEmpty
@@ -40,9 +42,9 @@ func GetClassListById(classIdList []int64) (map[int64]*GoodsClass, error) {
 		return nil, RecordEmpty
 	}
 
-	classMap := map[int64]*GoodsClass{}
+	classMap := map[uint64]*GoodsClass{}
 	for _, classInfo := range classList {
-		classMap[classInfo.Id] = classInfo
+		classMap[classInfo.ClassId] = classInfo
 	}
 
 	return classMap, nil

@@ -2,7 +2,8 @@ package logic
 
 import (
 	daoSql "dao/sql"
-	"strconv"
+	"encoding/json"
+	"time"
 )
 
 /**
@@ -13,67 +14,83 @@ import (
  *   addressInfo 目前直接返回 dao/sql/goods中字段
  *   err
  */
-func genOrderGoods(goodsInfo *daoSql.Goods, goodsNum int64) (*daoSql.OrderGoods, error) {
+func genOrderGoods(uid uint64, goodsInfo *daoSql.Goods, goodsNum uint16) (*daoSql.OrderGoods, error) {
 	orderGoods := daoSql.OrderGoods{
 		GoodsId:          goodsInfo.Id,
+		MemberId:         uid,
 		GoodsName:        goodsInfo.Name,
 		GoodsNorms:       goodsInfo.Norms,
 		GoodsImage:       goodsInfo.Image,
 		GoodsUnit:        goodsInfo.Unit,
 		GoodsNum:         goodsNum,
-		GoodsPrice:       int(goodsInfo.Price * goodsNum),
-		GoodsMarketprice: int(goodsInfo.Marketprice * goodsNum),
-		GoodsCostprice:   int(goodsInfo.Costprice * goodsNum),
+		GoodsPrice:       uint64(goodsInfo.Price * goodsNum),
+		GoodsMarketprice: uint64(goodsInfo.Marketprice * goodsNum),
+		GoodsCostprice:   uint64(goodsInfo.Costprice * goodsNum),
 	}
 	return &orderGoods, nil
 }
 
+type OrderMap struct {
+	Address      *daoSql.Address
+	GoodsIdMap   map[uint64]*daoSql.Goods
+	GoodsList    []*CartInfo
+	ExceptTime   int64
+	OrderMessage string
+}
+
 /**
  * @abstract 根据商品信息+购买数量生成 orderGoods 信息
- * @param goodsInfo
- * @param goodsNum int64
+ * @param uid
+ * @param orderMap 具体字段参见
  * @return
  *   addressInfo 目前直接返回 dao/sql/goods中字段
  *   err
  */
-func GenOrder(uid int64, goodsList []map[string]string) (*daoSql.Order, error) {
+func GenOrder(uid uint64, orderMap OrderMap) (*daoSql.Order, []*daoSql.OrderGoods, error) {
 	// 生成订单商品信息
+	var amount, marketAmount, costAmount uint64
 	orderGoodsList := []*daoSql.OrderGoods{}
-	for _, goodsInfo := range goodsList {
-		goodsId, err := strconv.ParseInt(goodsInfo["goods_id"], 10, 64)
-		if nil != err {
+	orderGoodsIdList := []uint64{}
+	for _, goodsInfo := range orderMap.GoodsList {
+		if _, ok := orderMap.GoodsIdMap[goodsInfo.GoodsId]; !ok {
 			// log
-			continue
+			break
 		}
-		goodsNum, _ := strconv.ParseInt(goodsInfo["goods_num"], 10, 64)
-		if v, ok := goodsIdMap[goodsId]; ok {
-			if goodsNum > int64(v.Storage) {
-				goodsNum = int64(v.Storage)
-			}
-			orderGoodsInfo, _ := genOrderGoods(goodsIdMap[goodsId], goodsNum)
-			orderGoodsList = append(orderGoodsList, orderGoodsInfo)
-		} else {
-			// log
-			continue
-		}
-	}
 
+		// 生成 order_goods
+		orderGoodsInfo, _ := genOrderGoods(uid, orderMap.GoodsIdMap[goodsInfo.GoodsId], goodsInfo.GoodsNum)
+		// 生成 order_goods 列表
+		orderGoodsList = append(orderGoodsList, orderGoodsInfo)
+		// 收集订单中 goods_id
+		orderGoodsIdList = append(orderGoodsIdList, goodsInfo.GoodsId)
+
+		amount += orderGoodsInfo.GoodsPrice
+		costAmount += orderGoodsInfo.GoodsCostprice
+		marketAmount += orderGoodsInfo.GoodsMarketprice
+	}
 	// 生成订单主体信息
-	var amount = 0
-	for _, item := range orderGoodsList {
-		amount += item.GoodsPrice
-	}
 	order := &daoSql.Order{
-		CostAmount:      amount,
-		Amount:          amount,
-		CostOrderAmount: 0,
-		OrderAmount:     amount,
-		OrderState:      1,
+		MemberId:          uid,
+		AddressId:         orderMap.Address.Id,
+		AddTime:           uint64(time.Now().Unix()),
+		ExpectTime:        uint64(orderMap.ExceptTime),
+		ReciverName:       orderMap.Address.TrueName,
+		ReciverMobile:     orderMap.Address.Mobile,
+		CostAmount:        costAmount,
+		Amount:            amount,
+		CostOrderAmount:   costAmount,
+		MarketOrderAmount: marketAmount,
+		OrderAmount:       amount,
+		OrderState:        1,
+		CancelFlag:        0,
+		OrderMessage:      orderMap.OrderMessage,
+		ExtInfo: daoSql.OrderExt{
+			GoodsList:   orderGoodsIdList,
+			AddressInfo: orderMap.Address,
+		},
 	}
 
-	// 过滤参数
-	order.Filter()
-	return order, nil
+	return order, orderGoodsList, nil
 }
 
 /**
@@ -84,56 +101,86 @@ func GenOrder(uid int64, goodsList []map[string]string) (*daoSql.Order, error) {
  *   addressInfo 目前直接返回 dao/sql/goods中字段
  *   err
  */
-func SubmitOrder(uid int64, goodsList []map[string]string) (*daoSql.Order, error) {
-	var amount, marketAmount, costAmount = 0
-	for _, item := range goodsInfo {
-		amount += item.GoodsPrice
-		costAmount += item.Costprice
-		marketAmount += item.Marketprice
-	}
-	order := &daoSql.Order{
-		MemberId:        uid,
-		Amount:          amount,
-		CostOrderAmount: 0,
-		OrderAmount:     amount,
-		OrderState:      1,
+func SubmitOrder(uid uint64, orderMap OrderMap) (orderInfo *daoSql.Order, orderGoodsList []*daoSql.OrderGoods, err error) {
+	orderInfo, orderGoodsList, err = GenOrder(uid, orderMap)
+	if nil != err {
+		return
 	}
 
-	// UserOrderTimes  int64  `json:"-"`
-	// AddressId       int32  `json:"-"`
-	// OrderTime       int64  `json:"-"`
-	// OrderTimeStr    string `gorm:"-"`
-	// ExpectTime      int64  `json:"-"`
-	// ExpectTimeStr   string `gorm:"-"`
-	// ConfirmTime     int64  `json:"-"`
-	// ConfirmTimeStr  string `gorm:"-"`
-	// FinishedTime    int64  `json:"-"`
-	// FinishedTimeStr string `gorm:"-"`
-	// PaySn           int64  `json:"-"`
-	// PaymentTime     int64  `json:"-"`
-	// PaymentTimeStr  string `gorm:"-"`
-	// CostAmount      int
-	// Amount          int
-	// CostOrderAmount int
-	// OrderAmount     int
-	// RefundAmount    int64
-	// OrderState      int16
-	// CancelFlag      int8
-	// Ext             string `json:"-"`
-	// ExtInfo         string `gorm:"-"`
+	// 补充其它字段
+	orderInfo.OrderSn = daoSql.GenOrderSn(0, uid)
+	orderInfo.PaySn = daoSql.GenPaySn(0, uid)
+	// GenPaySn
+	ext, _ := json.Marshal(orderInfo.ExtInfo)
+	orderInfo.Ext = string(ext)
 
-	// 加事务
-	tx := model.DB.Begin()
-	// 插入订单
+SUBMIT:
+	for i := 0; i < 3; i++ {
+		// 加事务
+		tx := daoSql.DB.Begin()
+		// 插入订单
+		tx.Create(orderInfo)
+		if 0 >= orderInfo.OrderId {
+			tx.Rollback()
+			// 重新提交流程
+			continue SUBMIT
+		}
 
-	// 减少 goodsStorage
-	// 插入 order_goods
-	// 更新 goodsStatis userStatis
-	// 提交事务 / 回滚事务   tx.Rollback()
+		for _, v := range orderGoodsList {
+			v.OrderId = orderInfo.OrderId
+			// 插入order_goods
+			tx.Create(v)
+			if 0 >= v.Id {
+				tx.Rollback()
+				// 重新提交流程
+				continue SUBMIT
+			}
 
-	// 过滤订单参数
-	order.Filter()
-	return order, nil
+			// 减少 goodsStorage
+			// DB.where("id = ?", v.GoodsId).
+			rest := tx.Exec("UPDATE goods SET storage=storage-(?),goods_salenum=goods_salenum+(?) WHERE id = (?)", v.GoodsNum, v.GoodsNum, v.GoodsId)
+			if nil != rest.Error || 0 >= rest.RowsAffected {
+				tx.Rollback()
+				// 重新提交流程
+				continue SUBMIT
+			}
+		}
+
+		// 插入 log
+		err = daoSql.InsertOrderLog(tx, orderInfo.OrderId, "新订单", orderInfo.AddTime, daoSql.OrderStateNew, orderInfo.OrderAmount)
+		if nil != err {
+			tx.Rollback()
+			continue SUBMIT
+		}
+
+		// 提交事务 / 回滚事务
+		tx.Commit()
+
+		// 另起线程更新统计信息 goodsStatis userStatis
+		go func(orderMap OrderMap, orderInfo *daoSql.Order) {
+			goodsInfo := make([]*daoSql.GoodsOrderInfo, len(orderMap.GoodsList))
+			for i, v := range orderMap.GoodsList {
+				if 1 == v.Selected && 0 < v.GoodsNum {
+					goodsInfo[i] = &daoSql.GoodsOrderInfo{
+						GoodsId:  v.GoodsId,
+						GoodsNum: v.GoodsNum,
+					}
+				}
+			}
+
+			daoSql.UpdateGoodsStatis(goodsInfo)
+			userStatis := daoSql.UserStatisInfo{
+				OrderId: orderInfo.OrderId,
+			}
+			daoSql.UpdateUserStatis(orderInfo.MemberId, &userStatis)
+		}(orderMap, orderInfo)
+
+		// 过滤订单参数  准备输出
+		orderInfo.Filter()
+		return
+	}
+
+	return
 }
 
 /**
@@ -163,7 +210,7 @@ func GetMyOrderList(uid, baseId, rn int) (orderDetailList []map[string]interface
 		return
 	}
 	// orderIdList
-	orderIdList := []int64{}
+	orderIdList := []uint64{}
 	for _, v := range orderList {
 		orderIdList = append(orderIdList, v.OrderId)
 	}
@@ -175,7 +222,7 @@ func GetMyOrderList(uid, baseId, rn int) (orderDetailList []map[string]interface
 	}
 
 	// addressIdList
-	addressIdList := []int32{}
+	addressIdList := []uint64{}
 	for _, v := range orderList {
 		addressIdList = append(addressIdList, v.AddressId)
 	}

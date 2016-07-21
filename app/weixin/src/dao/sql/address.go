@@ -3,14 +3,14 @@ package sql
 import . "global"
 
 type Address struct {
-	Id        int32 `gorm:"primary_key"`
-	MemberId  int32
+	Id        uint64 `gorm:"primary_key"`
+	MemberId  uint64
 	TrueName  string
-	Gender    int8
+	Gender    uint8
 	LiveArea  string
 	Address   string
 	Mobile    string
-	IsDefault int8
+	IsDefault uint8
 }
 
 /**
@@ -18,7 +18,7 @@ type Address struct {
  * @param addressIdList
  * @return map[int64]Address
  */
-func GetAddressListById(addressIdList []int32) (map[int32]*Address, error) {
+func GetAddressListById(addressIdList []uint64) (map[uint64]*Address, error) {
 	if 0 >= len(addressIdList) {
 		// log
 		return nil, RecordEmpty
@@ -35,7 +35,7 @@ func GetAddressListById(addressIdList []int32) (map[int32]*Address, error) {
 		return nil, RecordEmpty
 	}
 
-	addressIdMap := map[int32]*Address{}
+	addressIdMap := map[uint64]*Address{}
 	for _, addressInfo := range addressList {
 		addressIdMap[addressInfo.Id] = addressInfo
 	}
@@ -49,7 +49,7 @@ func GetAddressListById(addressIdList []int32) (map[int32]*Address, error) {
  * @return map[int64]Goods
  */
 func GetAddressListByUid(uid int64, onlyDefault bool) ([]*Address, error) {
-	if 0 >= len(uid) {
+	if 0 >= uid {
 		// log
 		return nil, RecordEmpty
 	}
@@ -72,32 +72,36 @@ func GetAddressListByUid(uid int64, onlyDefault bool) ([]*Address, error) {
 	return addressList, nil
 }
 
+// 地址详情
+type UserAddressInfo struct {
+	TrueName  string
+	Gender    uint8
+	LiveArea  string
+	Address   string
+	Mobile    string
+	IsDefault uint8
+}
+
 /**
  * @abstract 根据uid 列表获取地址信息
  * @param uid
  * @param addressInfo 需要插入的信息， key值见 insertFields
  * @return address
  */
-func SaveMyAddress(uid int64, addressInfo map[string]string) (*Address, error) {
+func SaveMyAddress(uid uint64, addressInfo *UserAddressInfo) (*Address, error) {
 	// insertFields = []string{"true_name", "gender", "live_area", "address", "mobile"}
 	if 0 >= uid {
 		// log
 		return &Address{}, RecordEmpty
 	}
 
-	trueName, _ = addressInfo["true_name"]
-	gender, _ = addressInfo["gender"]
-	liveArea, _ = addressInfo["live_area"]
-	address, _ = addressInfo["address"]
-	mobile, _ = addressInfo["mobile"]
-
 	address := Address{
 		MemberId:  uid,
-		TrueName:  trueName,
-		Gender:    gender,
-		LiveArea:  liveArea,
-		Address:   address,
-		Mobile:    mobile,
+		TrueName:  addressInfo.TrueName,
+		Gender:    addressInfo.Gender,
+		LiveArea:  addressInfo.LiveArea,
+		Address:   addressInfo.Address,
+		Mobile:    addressInfo.Mobile,
 		IsDefault: 1,
 	}
 	// 插入地址信息

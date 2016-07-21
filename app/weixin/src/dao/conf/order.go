@@ -1,14 +1,12 @@
 package conf
 
-import (
-	"util"
-)
+import "util"
 
 // 订单配置
 type Order struct {
 	Tips         string
 	Alert        string
-	StorageAlert string
+	StorageAlert string `yaml:"storage_alert"`
 }
 
 // 读取 cart.yaml的数据

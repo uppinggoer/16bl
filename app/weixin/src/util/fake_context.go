@@ -16,7 +16,7 @@ func NewContext(fileName, url, queryString string) echo.Context {
 	e := echo.New()
 	req := test.NewRequest(echo.POST, url, strings.NewReader(queryString))
 	req.Header().Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header().Set("cookie", "zhima_debug=1")
+	// req.Header().Set("cookie", "zhima_debug=1")
 
 	rec := test.NewResponseRecorder()
 	c := e.NewContext(req, rec).(echo.Context)

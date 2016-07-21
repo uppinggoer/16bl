@@ -15,9 +15,9 @@ import (
  *  []*daoSql.GoodsClass  class_id list 已经排序
  *   map[int64][]daoSql.Goods  map<class_id,goodsList已经排序>
  */
-func GetShopData(ctx echo.Context) (classList []*daoSql.GoodsClass, classIdMap map[int64][]*daoSql.Goods, err error) {
+func GetShopData(ctx echo.Context) (classList []*daoSql.GoodsClass, classIdMap map[uint64][]*daoSql.Goods, err error) {
 	classList = make([]*daoSql.GoodsClass, 0)
-	classIdMap = make(map[int64][]*daoSql.Goods)
+	classIdMap = make(map[uint64][]*daoSql.Goods)
 
 	// 获取 所有商品 信息
 	cond := map[string]string{
@@ -34,7 +34,7 @@ func GetShopData(ctx echo.Context) (classList []*daoSql.GoodsClass, classIdMap m
 	}
 
 	// 收集分类 id_list
-	classIdList := []int64{}
+	classIdList := []uint64{}
 	for k, _ := range classIdMap {
 		classIdList = append(classIdList, k)
 		classIdMap[k] = util.SortList(classIdMap[k], "sort", true).([]*daoSql.Goods)

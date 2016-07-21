@@ -9,7 +9,7 @@
 			<div class="inner">
 				<div class="oreder-info" style="text-align: left;padding: 6px 0px;">
 					<div class="container-inner appgoundborder" style="border-bottom-width: 2px;padding: 0px 8px;">
-						<label style="float: left;color: black;font-weight: 300;">{%= it.list[orderIdx]["orderInfo"]["order"]["OrderTimeStr"]%}</label>
+						<label style="float: left;color: black;font-weight: 300;">{%= it.list[orderIdx]["orderInfo"]["order"]["OrderTime"]%}</label>
 						<label class="appcolor" style="float: right;font-weight: 100;">
 							{%? it.list[orderIdx]["orderInfo"]["order"]["CancelFlag"] == 1 %}
 								订单取消
