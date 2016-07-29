@@ -242,3 +242,89 @@ func GetMyOrderList(uid, baseId, rn int) (orderDetailList []map[string]interface
 
 	return
 }
+
+/**
+ * @abstract 获取订单详情
+ * @param uid
+ * @param baseId
+ * @return
+ * 		[]map{
+ * 			"order"
+ *			"goodsList"
+ *		 	"addressInfo"
+ *		}
+ *   addressInfo 目前直接返回 dao/sql/goods中字段
+ *   err
+ */
+func GetOrderDetail(uid uint64, orderSn string) (orderDetail map[string]interface{}, err error) {
+	orderDetail = map[string]interface{}{}
+
+	// uid 订单列表
+	orderInfo, err := daoSql.GetOrderByOrderSn(orderSn)
+	if nil != err {
+		return
+	}
+	if orderInfo.MemberId != uid {
+		return
+	}
+
+	// orderGoodsMap
+	orderGoodsMap, err := daoSql.GetOrderGoodsMap([]uint64{orderInfo.OrderId})
+	if nil != err {
+		return
+	}
+
+	// addressIdMap
+	addressIdMap, err := daoSql.GetAddressListById([]uint64{orderInfo.AddressId})
+	if nil != err {
+		return
+	}
+
+	// 订单详情
+	orderDetail = map[string]interface{}{
+		"order":       orderInfo,
+		"goodsList":   orderGoodsMap[orderInfo.OrderId],
+		"addressInfo": addressIdMap[orderInfo.AddressId],
+	}
+
+	return
+}
+
+type OrderCancel struct {
+	CanCancel bool
+	CancelTip struct {
+		Tel string
+		Tip string
+	}
+	CancelReason map[uint16]string
+}
+
+/**
+ * @abstract 判断订单是否被用户取消
+ * @param orderInfo
+ * @return
+ * 	 OrderCancel
+ *   err
+ */
+func GetCancelInfo(orderInfo *daoSql.Order) (cancelInfo *OrderCancel) {
+	cancelInfo = &OrderCancel{
+		CanCancel:    true,
+		CancelReason: map[uint16]string{},
+	}
+	if daoSql.OrderNotCancel != orderInfo.CancelFlag {
+		cancelInfo.CanCancel = false
+	} else if daoSql.OrderStateOrder <= orderInfo.OrderState {
+		cancelInfo.CanCancel = false
+	}
+	if cancelInfo.CanCancel {
+		for k, v := range daoSql.CancelReason {
+			if 200 < k {
+				cancelInfo.CancelReason[k] = v
+			}
+		}
+	} else {
+		cancelInfo.CancelTip.Tel = "18211121906"
+		cancelInfo.CancelTip.Tip = "订单已经确认，请联系客服"
+	}
+	return
+}

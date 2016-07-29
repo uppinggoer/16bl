@@ -152,8 +152,8 @@
 		modal.find('.goods-img').attr("src",globalContext[goodsId].Image);
 		modal.find('.goods-name').text(globalContext[goodsId].Name);
 		modal.find('.goods-norms').text(globalContext[goodsId].Norms);
-		modal.find('.price').text("￥" + globalContext[goodsId].Price.toFixed(1));
-		modal.find('del').text("￥" + globalContext[goodsId].Marketprice.toFixed(1));
+		modal.find('.price').text("￥" + globalContext[goodsId].Price);
+		modal.find('del').text("￥" + globalContext[goodsId].Marketprice);
 		modal.find('.count').find("span").attr("goods-id",goodsId);
 		modal.find('.count').find("span").html($(".count").find("span[goods-id="+goodsId+"]").html());
 		modal.find('.item-cart').attr("goods-id",goodsId);

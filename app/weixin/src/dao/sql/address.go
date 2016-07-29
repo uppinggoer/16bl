@@ -13,6 +13,10 @@ type Address struct {
 	IsDefault uint8
 }
 
+func (this *Address) TableName() string {
+	return "address"
+}
+
 /**
  * @abstract 根据id 列表获取地址信息
  * @param addressIdList
@@ -48,7 +52,7 @@ func GetAddressListById(addressIdList []uint64) (map[uint64]*Address, error) {
  * @param uid
  * @return map[int64]Goods
  */
-func GetAddressListByUid(uid int64, onlyDefault bool) ([]*Address, error) {
+func GetAddressListByUid(uid uint64, onlyDefault bool) ([]*Address, error) {
 	if 0 >= uid {
 		// log
 		return nil, RecordEmpty

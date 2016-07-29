@@ -24,6 +24,8 @@ func (self OrderController) RegisterRoute(e *echo.Group) {
 	e.Get("/order/detail", echo.HandlerFunc(self.Detail))
 	e.Post("/order/prepare", echo.HandlerFunc(self.PrepareOrder))
 	e.Post("/order/do_order", echo.HandlerFunc(self.DoOrder))
+	e.Post("/order/cancel_rder", echo.HandlerFunc(self.CancelOrder))
+	e.Post("/order/eval_order", echo.HandlerFunc(self.EvalOrder))
 }
 
 // 确认信息页 form-> goods_list:[{"goods_id":"3","selected":"1","goods_num":"2"}]
@@ -58,16 +60,19 @@ func (OrderController) PrepareOrder(ctx echo.Context) error {
 	shipTimeList := []string{"XX", "XX"}
 	// shipTimeList := logic.GetShipTime()
 
-	// 获取地址信息
-	myAddressList, err := daoSql.GetAddressListByUid(10, true)
+	// 获取用户所有地址
+	myAddressList, err := daoSql.GetAddressListByUid(10, false)
 	if nil != err && RecordEmpty != err {
 		// log
 		return util.Fail(ctx, 10, err.Error())
 	}
 	var myAddress *daoSql.Address
-	if 0 < len(myAddressList) {
-		myAddress = myAddressList[0]
-	} else {
+	for _, addressItem := range myAddressList {
+		if uint8(1) == addressItem.IsDefault {
+			myAddress = addressItem
+		}
+	}
+	if nil == myAddress {
 		myAddress = &daoSql.Address{}
 	}
 
@@ -111,6 +116,12 @@ func (OrderController) PrepareOrder(ctx echo.Context) error {
 	} else {
 		orderData.Alert = ""
 	}
+
+	// 格式化地址列表
+	for _, addressItem := range myAddressList {
+		orderData.AddressList = append(orderData.AddressList, (*apiIndex.AddressType)(addressItem))
+	}
+	// OrderList
 
 	orderData.Format()
 	return util.Success(ctx, orderData)
@@ -197,6 +208,7 @@ func (OrderController) DoOrder(ctx echo.Context) error {
 			GoodsList: arrApiOrderGoods,
 			Order:     &apiIndex.OrderBase{Order: orderInfo},
 		},
+		Cancel: genApiCancel(orderInfo),
 	}
 
 	orderData.Format()
@@ -248,38 +260,51 @@ func (OrderController) MyOrderList(ctx echo.Context) error {
 }
 
 // 订单列表页
+func (OrderController) CancelOrder(ctx echo.Context) error {
+	// 获取订单列表信息
+	// orderSn := ctx.FormValue("order_sn")
+	// cancelFlag := ctx.FormValue("cancel_flag")
+
+	return util.Success(ctx, nil)
+}
+
+// 订单列表页
+func (OrderController) EvalOrder(ctx echo.Context) error {
+	// 获取订单列表信息
+	// orderSn := ctx.FormValue("order_sn")
+	// stars := ctx.FormValue("stars")
+	// feedback := ctx.FormValue("feedback")
+
+	return util.Success(ctx, nil)
+}
+
+// 订单列表页
 func (OrderController) Detail(ctx echo.Context) error {
-	// ordeSn := ctx.QueryParam("ordersn")
+	ordeSn := ctx.QueryParam("order_sn")
 
 	// 获取订单列表信息
-	// uid, base_id, rn
-	myOrderMapList, hasMore, err := logic.GetMyOrderList(10, 0, 20)
+	// uid, orderSn
+	myOrderMap, err := logic.GetOrderDetail(10, ordeSn)
 	if nil != err {
 		return err
 	}
 	// 拼装接口数据
-	orderData := &apiIndex.OrderList{
-		HasMore: hasMore,
+	arrApiOrderGoods := make([]*apiIndex.OrderGoods, len(myOrderMap["goodsList"].([]*daoSql.OrderGoods)))
+	for idx, item := range myOrderMap["goodsList"].([]*daoSql.OrderGoods) {
+		arrApiOrderGoods[idx] = &apiIndex.OrderGoods{OrderGoods: item}
 	}
-
-	// orderData
-	for _, v := range myOrderMapList {
-		arrApiOrderGoods := make([]*apiIndex.OrderGoods, len(v["goodsList"].([]*daoSql.OrderGoods)))
-		for idx, item := range v["goodsList"].([]*daoSql.OrderGoods) {
-			arrApiOrderGoods[idx] = &apiIndex.OrderGoods{OrderGoods: item}
-		}
-
-		orderData.List = append(orderData.List, &apiIndex.Order{
-			Address: (*apiIndex.AddressType)(v["addressInfo"].(*daoSql.Address)),
-			OrderInfo: apiIndex.OrderInfo{
-				Order:     &apiIndex.OrderBase{Order: v["order"].(*daoSql.Order)},
-				GoodsList: arrApiOrderGoods,
-			},
-		})
+	orderData := &apiIndex.Order{
+		Alert:   "",
+		Address: (*apiIndex.AddressType)(myOrderMap["addressInfo"].(*daoSql.Address)),
+		OrderInfo: apiIndex.OrderInfo{
+			Order:     &apiIndex.OrderBase{Order: myOrderMap["order"].(*daoSql.Order)},
+			GoodsList: arrApiOrderGoods,
+		},
+		Cancel: genApiCancel(myOrderMap["order"].(*daoSql.Order)),
 	}
 
 	orderData.Format()
-	return util.Render(ctx, "order/info", "订单详情", orderData.List[0])
+	return util.Render(ctx, "order/info", "订单详情", orderData)
 }
 
 // 生成订单列表页页的 html 不提供外部接口
@@ -356,4 +381,38 @@ func fetchAddress(ctx echo.Context) (*daoSql.Address, error) {
 		return &daoSql.Address{}, err
 	}
 	return myAddress, err
+}
+
+// 根据订单
+func genApiCancel(orderInfo *daoSql.Order) (cancel *apiIndex.Cancel) {
+	// 读入配置信息
+	envConf, _ := daoConf.EnvConf()
+
+	// 订单取消信息
+	cancelInfo := logic.GetCancelInfo(orderInfo)
+
+	cancel = &apiIndex.Cancel{
+		CanCancel: cancelInfo.CanCancel,
+	}
+
+	if !cancelInfo.CanCancel {
+		if 0 < len(envConf.ServiceTel) {
+			cancel.CancelTip.Tel = envConf.ServiceTel
+		} else {
+			cancel.CancelTip.Tel = cancelInfo.CancelTip.Tel
+		}
+		cancel.CancelTip.Tip = cancelInfo.CancelTip.Tip
+
+	} else {
+		cancelReasonList := []*apiIndex.CancelReasonType{}
+		for k, v := range cancelInfo.CancelReason {
+			tmp := &apiIndex.CancelReasonType{
+				Flag:    util.Itoa(k),
+				Context: v,
+			}
+			cancelReasonList = append(cancelReasonList, tmp)
+		}
+		cancel.CancelReason = cancelReasonList
+	}
+	return cancel
 }

@@ -6,6 +6,8 @@ type Order struct {
 	Address      *AddressType `json:"address"`
 	ShipTimeList []string     `json:"shipTimeList"`
 	OrderInfo    `json:"orderInfo"`
+	Cancel       *Cancel
+	AddressList  []*AddressType `json:"orderList"`
 }
 
 func (self *Order) Format() {
@@ -22,4 +24,17 @@ func (self *OrderList) Format() {
 	for _, v := range self.List {
 		v.Format()
 	}
+}
+
+type Cancel struct {
+	CanCancel bool
+	CancelTip struct {
+		Tel string
+		Tip string
+	}
+	CancelReason []*CancelReasonType
+}
+type CancelReasonType struct {
+	Flag    string
+	Context string
 }

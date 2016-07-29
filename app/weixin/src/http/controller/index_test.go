@@ -54,10 +54,20 @@ func TestDoOrder(t *testing.T) {
 }
 func TestDetail(t *testing.T) {
 	index := OrderController{}
-	context := util.NewContext("", "/order/do_order", `goods_list=[{"goods_id":"101","selected":"1","goods_num":"1"},{"goods_id":"102","selected":"1","goods_num":"2"}]`)
+	context := util.NewContext("", "/order/do_order?order_sn=17288079600", ``)
 	// context.Request().Header().Set("cookie", "zhima_debug=1")
 
 	err := index.Detail(context)
+	if err != nil {
+		t.Fatal("err:", err)
+	}
+}
+func TestCancelOrder(t *testing.T) {
+	index := OrderController{}
+	context := util.NewContext("", "/order/do_order", `order_sn=17288079600&cancel_flag=11`)
+	// context.Request().Header().Set("cookie", "zhima_debug=1")
+
+	err := index.CancelOrder(context)
 	if err != nil {
 		t.Fatal("err:", err)
 	}
@@ -85,6 +95,16 @@ func TestTest(t *testing.T) {
 	index := TestController{}
 	context := util.NewContext("", "/test?file=text", ``)
 	err := index.Test(context)
+	if err != nil {
+		t.Fatal("err:", err)
+	}
+}
+
+func TestAddressList(t *testing.T) {
+	index := AddressController{}
+	context := util.NewContext("", "/address/list?from=order", ``)
+	// context.Request().Header().Set("cookie", "zhima_debug=1")
+	err := index.AddressList(context)
 	if err != nil {
 		t.Fatal("err:", err)
 	}

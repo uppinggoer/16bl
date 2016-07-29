@@ -1,6 +1,10 @@
 package controller
 
 import (
+	"util"
+
+	daoSql "dao/sql"
+
 	"github.com/labstack/echo"
 )
 
@@ -13,5 +17,12 @@ func (self AddressController) RegisterRoute(e *echo.Group) {
 
 // 地址列表
 func (AddressController) AddressList(ctx echo.Context) error {
-	return nil
+	addressList, err := daoSql.GetAddressListByUid(uint64(10), false)
+	if nil != err {
+		// log
+		return util.Fail(ctx, 10, "XXX")
+	}
+
+	return util.Render(ctx, "address/list", "送货地址", addressList)
+	// return util.Success(ctx, addressList)
 }

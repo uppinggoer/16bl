@@ -32,7 +32,7 @@ func GetClassListById(classIdList []uint64) (map[uint64]*GoodsClass, error) {
 	}
 
 	classList := []*GoodsClass{}
-	sqlRet := DB.Where("id in (?)", classIdList).Find(&classList)
+	sqlRet := DB.Where("class_id in (?)", classIdList).Find(&classList)
 	if nil != sqlRet.Error {
 		// log sqlRet.Error
 		return nil, RecordError

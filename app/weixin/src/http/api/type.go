@@ -49,11 +49,28 @@ func (self *OrderBase) Format() {
 	self.Amount = util.GetMoneyStr(int64(self.Order.Amount))
 	self.MarketOrderAmount = util.GetMoneyStr(int64(self.Order.MarketOrderAmount))
 	self.OrderAmount = util.GetMoneyStr(int64(self.Order.OrderAmount))
+	self.OrderId = 0
 
-	self.AddTime = time.Unix(int64(self.Order.AddTime), 0).Format("2006-01-02 15:04:05")
-	self.ExpectTime = time.Unix(int64(self.Order.ExpectTime), 0).Format("2006-01-02 15:04:05")
-	self.FinishedTime = time.Unix(int64(self.Order.FinishedTime), 0).Format("2006-01-02 15:04:05")
-	self.ShippingTime = time.Unix(int64(self.Order.ShippingTime), 0).Format("2006-01-02 15:04:05")
+	if 0 >= self.Order.AddTime {
+		self.AddTime = "-"
+	} else {
+		self.AddTime = time.Unix(int64(self.Order.AddTime), 0).Format("2006-01-02 15:04:05")
+	}
+	if 0 >= self.Order.AddTime {
+		self.ExpectTime = "-"
+	} else {
+		self.ExpectTime = time.Unix(int64(self.Order.ExpectTime), 0).Format("2006-01-02 15:04:05")
+	}
+	if 0 >= self.Order.FinishedTime {
+		self.FinishedTime = "-"
+	} else {
+		self.FinishedTime = time.Unix(int64(self.Order.FinishedTime), 0).Format("2006-01-02 15:04:05")
+	}
+	if 0 >= self.Order.ShippingTime {
+		self.ShippingTime = "-"
+	} else {
+		self.ShippingTime = time.Unix(int64(self.Order.ShippingTime), 0).Format("2006-01-02 15:04:05")
+	}
 }
 
 // 分类信息
