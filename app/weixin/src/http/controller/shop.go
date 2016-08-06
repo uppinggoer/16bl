@@ -41,6 +41,7 @@ func (ShopController) ShopList(ctx echo.Context) error {
 		cartData.ClassList = append(cartData.ClassList, &classItem)
 	}
 
+	cartData.Format()
 	// return util.Success(ctx, cartData)
 	return util.Render(ctx, "shop/list", "商品详情", cartData)
 }

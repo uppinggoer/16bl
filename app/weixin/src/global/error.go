@@ -21,4 +21,6 @@ var (
 
 	// cart
 	CartEmpty = errors.New("cart is empty")
+	// order
+	NotYourOrder = errors.New("not your order")
 )

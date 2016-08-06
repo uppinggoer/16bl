@@ -44,7 +44,7 @@ func InsertOrderLog(db *gorm.DB, orderId uint64, msg string, logTime uint64, ord
 		LogMsg:        msg,
 		LogTime:       logTimeStr,
 		LogUserId:     0,
-		LogUser:       "系统",
+		LogUser:       "用户端",
 		LogOrderstate: orderState,
 	}
 

@@ -94,7 +94,7 @@
 			<div class="save-address container-outter appcolor" style="width:auto;float: right;margin-right: 9px;">
 				<span> 保存 </span>
 			</div>
-			<div class="save-address container-outter" style="width:auto;">
+			<div class="container-outter" style="width:auto;">
 				<span> {%= it["Type"] %} </span>
 			</div>
 		</div>
@@ -111,7 +111,7 @@
 						<label style="width: 18%;margin-bottom: 0px;">
 							手机号
 						</label>
-						<input type="tel" name="mob_phone" placeholder="请填写收货人的电话" value="{%=it["Mobile"]%}"/>
+						<input type="tel" name="mobile" placeholder="请填写收货人的电话" value="{%=it["Mobile"]%}"/>
 					</div>
 					<div class="container-inner" style="text-align: left;padding-bottom: 6px;">
 						<label style="width: 18%;margin-bottom: 0px;">
@@ -123,7 +123,7 @@
 						<label style="width: 18%;margin-bottom: 0px;">
 							地址
 						</label>
-						<input name="building_info" placeholder="{%= it["Address"] %}">
+						<input name="address" placeholder="{%= it["Address"] %}">
 					</div>
 				</div>
 			</div>

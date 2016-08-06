@@ -54,7 +54,7 @@ func TestDoOrder(t *testing.T) {
 }
 func TestDetail(t *testing.T) {
 	index := OrderController{}
-	context := util.NewContext("", "/order/do_order?order_sn=17288079600", ``)
+	context := util.NewContext("", "/order/do_order?order_sn=17288449600", ``)
 	// context.Request().Header().Set("cookie", "zhima_debug=1")
 
 	err := index.Detail(context)
@@ -62,7 +62,18 @@ func TestDetail(t *testing.T) {
 		t.Fatal("err:", err)
 	}
 }
+
 func TestCancelOrder(t *testing.T) {
+	index := OrderController{}
+	context := util.NewContext("", "/order/eval_order", `order_sn=17288079600&stars=5&feedback=XDEFGF`)
+	// context.Request().Header().Set("cookie", "zhima_debug=1")
+
+	err := index.EvalOrder(context)
+	if err != nil {
+		t.Fatal("err:", err)
+	}
+}
+func TestEvalOrder(t *testing.T) {
 	index := OrderController{}
 	context := util.NewContext("", "/order/do_order", `order_sn=17288079600&cancel_flag=11`)
 	// context.Request().Header().Set("cookie", "zhima_debug=1")
@@ -110,6 +121,27 @@ func TestAddressList(t *testing.T) {
 	}
 }
 
+func TestAddressModify(t *testing.T) {
+	index := AddressController{}
+	context := util.NewContext("", "/address/modify", `true_name=%E6%9D%A8%E5%AE%8F%E5%BF%97&mobile=18511280986&live_area=%E8%A5%BF%E5%B7%A5%E5%A4%A7&address=%E6%98%9FF+632&addressId=2&uid=10`)
+	// context.Request().Header().Set("cookie", "zhima_debug=1")
+
+	err := index.AddressModify(context)
+	if err != nil {
+		t.Fatal("err:", err)
+	}
+}
+
+func TestAddressDel(t *testing.T) {
+	index := AddressController{}
+	context := util.NewContext("", "/address/modify", `addressId=2&uid=10`)
+	// context.Request().Header().Set("cookie", "zhima_debug=1")
+
+	err := index.AddressDel(context)
+	if err != nil {
+		t.Fatal("err:", err)
+	}
+}
 func TestGenOrderListHtml(t *testing.T) {
 	context := util.NewContext(STATIC_PATH+"orderList.html", "/order/list", "")
 	index := OrderController{}

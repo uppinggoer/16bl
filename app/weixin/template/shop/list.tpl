@@ -88,8 +88,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <p style="  34px;font-weight: 300;color: black;">{{$goodsInfo.Name}}</p>
-                            <p style="  30px;position: absolute;bottom: 16%;font-weight: 500;color: #999;">{{$goodsInfo.Norms}}</p>
+                            <p style="position:absolute;bottom:58%;font-weight:300;font-size:13px;color:black;">{{$goodsInfo.Name}}</p>
+                            <p style="position: absolute;bottom: 16%;font-weight: 500;color: #999;">{{$goodsInfo.Norms}}</p>
                             <p style="position: absolute;bottom: -6%;">
                                 <span class="price" style="color: red;margin-right: 5px;  30px">
                                     ￥{{$goodsInfo.Price}}

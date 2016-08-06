@@ -7,7 +7,7 @@ type Order struct {
 	ShipTimeList []string     `json:"shipTimeList"`
 	OrderInfo    `json:"orderInfo"`
 	Cancel       *Cancel
-	AddressList  []*AddressType `json:"orderList"`
+	AddressList  []*AddressType `json:"addressList"`
 }
 
 func (self *Order) Format() {

@@ -87,6 +87,58 @@ type UserAddressInfo struct {
 }
 
 /**
+ * @abstract 根据 address id 更新地址信息
+ * @param addressId
+ * @param addressInfo 需要更新的信息
+ * @return address
+ */
+func UpdateAddressById(addressId uint64, addressInfo *UserAddressInfo) (*Address, error) {
+	if 0 >= addressId {
+		// log
+		return &Address{}, RecordEmpty
+	}
+
+	address := Address{
+		TrueName: addressInfo.TrueName,
+		LiveArea: addressInfo.LiveArea,
+		Address:  addressInfo.Address,
+		Mobile:   addressInfo.Mobile,
+	}
+	DB.Model(&Address{Id: addressId}).Updates(address)
+
+	return &address, nil
+}
+
+/**
+ * @abstract 删除自己的地址
+ * @param uid
+ * @param addressId
+ * @return address
+ */
+func DelMyAddress(uid, addressId uint64) error {
+	if 0 >= uid {
+		// log
+		return RecordEmpty
+	}
+
+	address := Address{
+		Id:       addressId,
+		MemberId: uid,
+	}
+	sqlRet := DB.Delete(&address)
+
+	if nil != sqlRet.Error {
+		// log sqlRet.Error
+		return RecordError
+	}
+	if 0 >= sqlRet.RowsAffected {
+		// log
+		return RecordEmpty
+	}
+	return nil
+}
+
+/**
  * @abstract 根据uid 列表获取地址信息
  * @param uid
  * @param addressInfo 需要插入的信息， key值见 insertFields
@@ -100,13 +152,11 @@ func SaveMyAddress(uid uint64, addressInfo *UserAddressInfo) (*Address, error) {
 	}
 
 	address := Address{
-		MemberId:  uid,
-		TrueName:  addressInfo.TrueName,
-		Gender:    addressInfo.Gender,
-		LiveArea:  addressInfo.LiveArea,
-		Address:   addressInfo.Address,
-		Mobile:    addressInfo.Mobile,
-		IsDefault: 1,
+		MemberId: uid,
+		TrueName: addressInfo.TrueName,
+		LiveArea: addressInfo.LiveArea,
+		Address:  addressInfo.Address,
+		Mobile:   addressInfo.Mobile,
 	}
 	// 插入地址信息
 	DB.Create(&address)

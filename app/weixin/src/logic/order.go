@@ -2,6 +2,9 @@ package logic
 
 import (
 	daoSql "dao/sql"
+	"errors"
+	. "global"
+
 	"encoding/json"
 	"time"
 )
@@ -265,19 +268,19 @@ func GetOrderDetail(uid uint64, orderSn string) (orderDetail map[string]interfac
 		return
 	}
 	if orderInfo.MemberId != uid {
-		return
+		return nil, NotYourOrder
 	}
 
 	// orderGoodsMap
 	orderGoodsMap, err := daoSql.GetOrderGoodsMap([]uint64{orderInfo.OrderId})
-	if nil != err {
-		return
-	}
 
 	// addressIdMap
 	addressIdMap, err := daoSql.GetAddressListById([]uint64{orderInfo.AddressId})
 	if nil != err {
-		return
+		addressIdMap = map[uint64]*daoSql.Address{
+			orderInfo.AddressId: &daoSql.Address{},
+		}
+		err = nil
 	}
 
 	// 订单详情
@@ -288,6 +291,91 @@ func GetOrderDetail(uid uint64, orderSn string) (orderDetail map[string]interfac
 	}
 
 	return
+}
+
+/**
+ * @abstract 评介订单
+ * @param uid
+ * @param orderSn
+ * @param score
+ * @param feedback 反馈的内容
+ * @return
+ *   err
+ */
+func EvalOrder(uid uint64, orderSn string, score uint8, feedback string) (err error) {
+	// 取出 uid,orderSn
+	orderInfo, err := daoSql.GetOrderByOrderSn(orderSn)
+	if nil != err {
+		return
+	}
+	if orderInfo.MemberId != uid {
+		return NotYourOrder
+	}
+
+	if orderInfo.OrderState > daoSql.OrderStateSuccess {
+		return errors.New("订单未完成，不能评价")
+	}
+	if orderInfo.OrderState >= daoSql.OrderStateEvaluate {
+		return errors.New("订单不能重复评价")
+	}
+
+	// update
+	orderInfo.Score = score
+	orderInfo.OrderState = daoSql.OrderStateEvaluate
+	orderInfo.ExtInfo.Evaluate = feedback
+	err = orderInfo.Save()
+	if nil != err {
+		return
+	}
+
+	// insert order_log
+	err = daoSql.InsertOrderLog(daoSql.DB, orderInfo.OrderId, "订单评论", 0, daoSql.OrderStateEvaluate, orderInfo.OrderAmount)
+	if nil != err {
+		// log
+		return err
+	}
+
+	return nil
+}
+
+/**
+ * @abstract 取消订单
+ * @param uid
+ * @param orderSn
+ * @param cancelFlag 取消原因
+ * @return
+ *   err
+ */
+func CancelOrder(uid uint64, orderSn string, cancelFlag uint16) (err error) {
+	// 取出 uid,orderSn
+	orderInfo, err := daoSql.GetOrderByOrderSn(orderSn)
+	if nil != err {
+		return
+	}
+	if orderInfo.MemberId != uid {
+		return NotYourOrder
+	}
+
+	if !orderInfo.CancelOrder() {
+		return errors.New("订单未完成，不能评价")
+	}
+
+	// update
+	orderInfo.OrderState = cancelFlag
+	orderInfo.ExtInfo.CancelReason = daoSql.CancelReason[cancelFlag]
+	err = orderInfo.Save()
+	if nil != err {
+		return
+	}
+
+	// insert order_log
+	err = daoSql.InsertOrderLog(daoSql.DB, orderInfo.OrderId, "订单取消", 0, daoSql.OrderStateEvaluate, orderInfo.OrderAmount)
+	if nil != err {
+		// log
+		return err
+	}
+
+	return nil
 }
 
 type OrderCancel struct {
@@ -311,11 +399,8 @@ func GetCancelInfo(orderInfo *daoSql.Order) (cancelInfo *OrderCancel) {
 		CanCancel:    true,
 		CancelReason: map[uint16]string{},
 	}
-	if daoSql.OrderNotCancel != orderInfo.CancelFlag {
-		cancelInfo.CanCancel = false
-	} else if daoSql.OrderStateOrder <= orderInfo.OrderState {
-		cancelInfo.CanCancel = false
-	}
+
+	cancelInfo.CanCancel = orderInfo.CancelOrder()
 	if cancelInfo.CanCancel {
 		for k, v := range daoSql.CancelReason {
 			if 200 < k {

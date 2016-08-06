@@ -8,6 +8,7 @@ import (
 
 func RegisterRoutes(e *echo.Group) {
 	new(IndexController).RegisterRoute(e)
+	new(AddressController).RegisterRoute(e)
 	new(CartController).RegisterRoute(e)
 	new(ShopController).RegisterRoute(e)
 	new(OrderController).RegisterRoute(e)

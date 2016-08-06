@@ -37,11 +37,10 @@ type Order struct {
 	ExtInfo           OrderExt `gorm:"-"`
 }
 type OrderExt struct {
-	GoodsList       []uint64 `json:"goodsList"`
-	CancelReason    string   `json:"cancelReason"`
-	NotCancelReason string   `json:"notCancelReason"`
-	Evaluate        string   `json:"evaluate"`
-	AddressInfo     *Address `json:"addressInfo"`
+	GoodsList    []uint64 `json:"goodsList"`
+	CancelReason string   `json:"cancelReason"`
+	Evaluate     string   `json:"evaluate"`
+	AddressInfo  *Address `json:"addressInfo"`
 }
 
 const (
@@ -134,9 +133,42 @@ func GetListById(uid, baseId, rn int) ([]*Order, error) {
 	for _, v := range orderList {
 		v.Filter()
 	}
-
 	return orderList, nil
 }
+
+// 订单是否可以取消
+// 已经取消或者已经接单则无法取消
+func (self *Order) CancelOrder() bool {
+	if 0 > self.CancelFlag {
+		return false
+	} else if OrderStateOrder <= self.OrderState {
+		return false
+	}
+	return true
+}
+
+func (self *Order) Save() error {
+	extByte, err := json.Marshal(self.ExtInfo)
+	if nil != err {
+		// log
+		return err
+	}
+
+	// 获取 self ext
+	self.Ext = string(extByte)
+
+	sqlRet := DB.Save(self)
+	if nil != sqlRet.Error {
+		// log sqlRet.Error
+		return RecordError
+	}
+	if 0 >= sqlRet.RowsAffected {
+		// log
+		return RecordEmpty
+	}
+	return nil
+}
+
 func (self *Order) Filter() {
 	// 格式化
 	json.Unmarshal([]byte(self.Ext), &self.ExtInfo)

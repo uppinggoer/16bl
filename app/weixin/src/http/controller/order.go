@@ -67,13 +67,20 @@ func (OrderController) PrepareOrder(ctx echo.Context) error {
 		return util.Fail(ctx, 10, err.Error())
 	}
 	var myAddress *daoSql.Address
-	for _, addressItem := range myAddressList {
+	for idx, addressItem := range myAddressList {
+		// 默认取第一个
+		if 0 == idx {
+			myAddress = addressItem
+		}
+		// 取默认地址
 		if uint8(1) == addressItem.IsDefault {
 			myAddress = addressItem
 		}
 	}
 	if nil == myAddress {
 		myAddress = &daoSql.Address{}
+	} else {
+		myAddress.IsDefault = 1
 	}
 
 	// 读入配置信息
@@ -121,7 +128,6 @@ func (OrderController) PrepareOrder(ctx echo.Context) error {
 	for _, addressItem := range myAddressList {
 		orderData.AddressList = append(orderData.AddressList, (*apiIndex.AddressType)(addressItem))
 	}
-	// OrderList
 
 	orderData.Format()
 	return util.Success(ctx, orderData)
@@ -243,17 +249,6 @@ func (OrderController) MyOrderList(ctx echo.Context) error {
 			},
 		})
 	}
-	// var v = myOrderMapList[0]
-	// var a = &apiIndex.Order{
-	// 	Address: v["addressInfo"].(*apiIndex.AddressType),
-	// 	OrderBase: apiIndex.OrderBase{
-	// 		Order:     v["order"].(*daoSql.Order),
-	// 		GoodsList: v["goodsList"].([]*daoSql.OrderGoods),
-	// 	},
-	// }
-	// for i := 1; i < 20; i++ {
-	// 	orderData.List = append(orderData.List, a)
-	// }
 
 	orderData.Format()
 	return util.Success(ctx, orderData)
@@ -262,19 +257,29 @@ func (OrderController) MyOrderList(ctx echo.Context) error {
 // 订单列表页
 func (OrderController) CancelOrder(ctx echo.Context) error {
 	// 获取订单列表信息
-	// orderSn := ctx.FormValue("order_sn")
-	// cancelFlag := ctx.FormValue("cancel_flag")
+	uid := uint64(10)
+	orderSn := ctx.FormValue("order_sn")
+	cancelFlag := util.Atoi(ctx.FormValue("cancel_flag"), 16, false).(uint16)
 
+	err := logic.CancelOrder(uid, orderSn, cancelFlag)
+	if nil != err {
+		return util.Fail(ctx, 10, err.Error())
+	}
 	return util.Success(ctx, nil)
 }
 
 // 订单列表页
 func (OrderController) EvalOrder(ctx echo.Context) error {
 	// 获取订单列表信息
-	// orderSn := ctx.FormValue("order_sn")
-	// stars := ctx.FormValue("stars")
-	// feedback := ctx.FormValue("feedback")
+	uid := uint64(10)
+	orderSn := ctx.FormValue("order_sn")
+	stars := util.Atoi(ctx.FormValue("stars"), 8, false).(uint8)
+	feedback := ctx.FormValue("feedback")
 
+	err := logic.EvalOrder(uid, orderSn, stars, feedback)
+	if nil != err {
+		return util.Fail(ctx, 10, err.Error())
+	}
 	return util.Success(ctx, nil)
 }
 
@@ -363,14 +368,12 @@ func fetchAddress(ctx echo.Context) (*daoSql.Address, error) {
 
 	// 插入新的地址信息
 	trueName := ctx.FormValue("true_name")
-	gender := util.Atoi(ctx.FormValue("gender"), 8, false).(uint8)
 	liveArea := ctx.FormValue("live_area")
 	address := ctx.FormValue("address")
 	mobile := ctx.FormValue("mobile")
 	// 显式提取地址信息
 	addressInfo := daoSql.UserAddressInfo{
 		TrueName: trueName,
-		Gender:   gender,
 		LiveArea: liveArea,
 		Address:  address,
 		Mobile:   mobile,
