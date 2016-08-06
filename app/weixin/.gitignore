@@ -1,5 +1,6 @@
 pkg
 bin
+conf
 
 src/vendor
 !src/vendor/mainfest
