@@ -3,6 +3,7 @@
 package controller
 
 import (
+	"fmt"
 	"testing"
 
 	. "global"
@@ -39,6 +40,8 @@ func TestCart(t *testing.T) {
 func TestPrepareOrder(t *testing.T) {
 	index := OrderController{}
 	context := util.NewContext("", "/order/prepare", `goods_list=[{"goods_id":"102","selected":"1","goods_num":"20000"},{"goods_id":"103","selected":"1","goods_num":"4"},{"goods_id":"104","selected":"1","goods_num":"2"}]`)
+	fmt.Println(context.Path())
+	panic(0)
 	err := index.PrepareOrder(context)
 	if err != nil {
 		t.Fatal("err:", err)

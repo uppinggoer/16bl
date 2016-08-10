@@ -7,12 +7,11 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	_ "syscall"
 	"time"
 
-	"http"
-
 	. "global"
+	"http"
+	mw "http/middleware"
 	. "util"
 
 	"github.com/facebookgo/grace/gracehttp"
@@ -67,7 +66,7 @@ func main() {
 			`"tx_bytes":${tx_bytes}}` + "\n",
 		Output: serverLogFile,
 	}
-	genralGroup := e.Group("", middleware.LoggerWithConfig(loggerConfig))
+	genralGroup := e.Group("", middleware.LoggerWithConfig(loggerConfig), mw.UserInfo())
 	http.RegisterRoutes(genralGroup)
 
 	// 默认监听 127.0.0.1：8080

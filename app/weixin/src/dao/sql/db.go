@@ -16,19 +16,19 @@ var strConnect string
 func init() {
 	// 默认监听 127.0.0.1：8080
 	var serverConf = util.Conf("db")
-	host := serverConf.MustValue("db_host", "127.0.0.1").(string)
-	port := serverConf.MustValue("db_port", "3306").(string)
-	dbName, err := serverConf.Value("db_name")
+	host := serverConf.MustValue("mysql.host", "127.0.0.1").(string)
+	port := serverConf.MustValue("mysql.port", "3306").(string)
+	dbName, err := serverConf.Value("mysql.name")
 	if nil != err {
 		// log err
 		return
 	}
-	dbUser, err := serverConf.Value("db_user")
+	dbUser, err := serverConf.Value("mysql.user")
 	if nil != err {
 		// log err
 		return
 	}
-	passwd, err := serverConf.Value("db_passwd")
+	passwd, err := serverConf.Value("mysql.passwd")
 	if nil != err {
 		// log err
 		return

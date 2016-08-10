@@ -1,5 +1,9 @@
 package api
 
+import (
+	daoConf "dao/conf"
+)
+
 // 购物车接口
 type Order struct {
 	Alert        string       `json:"alert"` // 提示文案
@@ -8,6 +12,7 @@ type Order struct {
 	OrderInfo    `json:"orderInfo"`
 	Cancel       *Cancel
 	AddressList  []*AddressType `json:"addressList"`
+	WeChatPay    *WeChatPay
 }
 
 func (self *Order) Format() {
@@ -37,4 +42,8 @@ type Cancel struct {
 type CancelReasonType struct {
 	Flag    string
 	Context string
+}
+
+type WeChatPay struct {
+	daoConf.WeChatJs
 }

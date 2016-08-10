@@ -1,8 +1,6 @@
 package logic
 
 import (
-	_ "fmt"
-
 	daoConf "dao/conf"
 	daoSql "dao/sql"
 

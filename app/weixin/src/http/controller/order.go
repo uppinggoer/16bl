@@ -30,8 +30,6 @@ func (self OrderController) RegisterRoute(e *echo.Group) {
 
 // 确认信息页 form-> goods_list:[{"goods_id":"3","selected":"1","goods_num":"2"}]
 func (OrderController) PrepareOrder(ctx echo.Context) error {
-	// fmt.Printf("%#v,%#v", ctx.Request().FormParams(), ctx.Request().Header())
-	// write();
 	var uid uint64
 	uid = 10
 

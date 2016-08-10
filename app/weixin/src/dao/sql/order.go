@@ -18,8 +18,8 @@ type Order struct {
 	ReciverName       string
 	ReciverMobile     string
 	OrderMessage      string
-	Score             uint8 `json:"-"`
-	PaySn             string
+	Score             uint8
+	PaySn             string `json:"-"`
 	CostAmount        uint64 `json:"-"`
 	Amount            uint64
 	MarketOrderAmount uint64

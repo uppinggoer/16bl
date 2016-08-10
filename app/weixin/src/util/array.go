@@ -97,3 +97,17 @@ func SortList(inputList interface{}, sortKey string, asc bool) interface{} {
 
 	return sortTmp.Entry.Interface()
 }
+
+func Merge(arrA, arrB []interface{}) []interface{} {
+	lenB := len(arrB)
+	arrLen := len(arrA) + lenB
+
+	arrC := make([]interface{}, arrLen)
+	lenC := copy(arrC, arrA)
+
+	for i := 0; i < lenB; i++ {
+		arrC[lenC+i] = arrB[i]
+	}
+
+	return arrC
+}

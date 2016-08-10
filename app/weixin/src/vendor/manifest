@@ -2,6 +2,20 @@
 	"version": 0,
 	"dependencies": [
 		{
+			"importpath": "github.com/garyburd/redigo/internal",
+			"repository": "https://github.com/garyburd/redigo",
+			"revision": "b8dc90050f24c1a73a52f107f3f575be67b21b7c",
+			"branch": "master",
+			"path": "/internal"
+		},
+		{
+			"importpath": "github.com/garyburd/redigo/redis",
+			"repository": "https://github.com/garyburd/redigo",
+			"revision": "b8dc90050f24c1a73a52f107f3f575be67b21b7c",
+			"branch": "master",
+			"path": "/redis"
+		},
+		{
 			"importpath": "github.com/go-sql-driver/mysql",
 			"repository": "https://github.com/go-sql-driver/mysql",
 			"revision": "3654d25ec346ee8ce71a68431025458d52a38ac0",

@@ -211,7 +211,7 @@
 						</tbody>
 					</table>
 					<div class="cancel-item cancel-button" style="display:blockdisplay: block;color: red;margin-top: 8px;border-radius: 5px;">
-						<div class="dialog-action dialog-hide" style="width:99%" data-action="button" data-action-arg="cancel">取消</div>
+						<div class="dialog-hide" style="width:99%" data-action="button" data-action-arg="cancel">取消</div>
 					</div>
 				</div>
 			</div>
