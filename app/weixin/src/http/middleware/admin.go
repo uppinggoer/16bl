@@ -34,10 +34,10 @@ func UserInfo() echo.MiddlewareFunc {
 				code := ctx.QueryParam("code")
 				if 0 < len(code) {
 					// 注册OR刷新 openId,uid
-					openId, uid, err = logic.AuthorizeAndUserInfo(code)
-					if nil != err {
-						token = logic.GenToken(uid, openId, time.Now().Unix())
-					}
+					// openId, uid, err := logic.AuthorizeAndUserInfo(code)
+					// if nil != err {
+					// 	token = logic.GenToken(uid, openId, time.Now().Unix())
+					// }
 					break
 				}
 
