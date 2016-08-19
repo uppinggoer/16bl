@@ -34,6 +34,9 @@ var (
 	// wechat
 	JsAuthError = errors.New("fail get js auth")
 
+	// token无效
+	BadTokenError = errors.New("token not right")
+
 	// xml
 	XmlParseEmpty = errors.New("xml empty")
 )

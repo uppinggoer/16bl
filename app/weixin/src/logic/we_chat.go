@@ -52,9 +52,29 @@ func AuthJsInfo(authUrl string) (timestamp int64, nonceStr, signature string, er
 	return
 }
 
-// 使用用户授权 code 获取用户 openid 继而刷新用户信息
-func AuthorizeAndUserInfo(code string, repeat bool) {
+func GetUserByOpenId(openId string) *daoSql.Member {
+	uid, _ := daoSql.GetUidByOpenId(openId)
+	if 0 < uid {
+		userInfo, err := daoSql.GetInfoByUid(uid)
+		if nil != err {
+			return userInfo
+		}
+	}
+
+	return &daoSql.Member{}
+}
+
+// 使用用户授权 code 获取用户 openid
+// 注册or刷新用户信息
+// 返回 openId, member, err
+func AuthorizeAndUserInfo(code string, repeat bool) (openId string, userInfo *daoSql.Member, err error) {
+	openId = ""
+	userInfo = &daoSql.Member{}
+	err = nil
+
 	if 0 < len(code) {
+		// log
+		return
 	}
 
 	// get access_token
@@ -65,11 +85,9 @@ func AuthorizeAndUserInfo(code string, repeat bool) {
 		"code":       {code},
 		"grant_type": {"authorization_code"},
 	}
-
-	var err error
-	accessFail := true
-	for intTry := 2; intTry > 0 && accessFail && repeat; intTry-- {
-		resBody, err := util.CallHttp(util.HTTP_GET, userInfoUrl, params)
+	for intTry := 2; intTry > 0 && repeat; intTry-- {
+		var resBody []byte
+		resBody, err = util.CallHttp(util.HTTP_GET, userInfoUrl, params)
 		if nil != err {
 			// log error
 			continue
@@ -87,16 +105,43 @@ func AuthorizeAndUserInfo(code string, repeat bool) {
 			continue
 		}
 
-		accessFail = false
+		// openId
+		openId = userInfoRes.OpenId
+		// 获取 weChatInfo
+		var weChatInfo *daoSql.WeChatInfo
+		weChatInfo, err = getUserFromWechat(userInfoRes.AccessToken, userInfoRes.OpenId, false)
+		if err != nil {
+			var uid uint64
+			uid, err = daoSql.GetUidByOpenId(weChatInfo.OpenId)
+			if 0 >= uid {
+				// 注册 生成用户主体信息
+				userInfo.Name = weChatInfo.Nickname
+				userInfo.Avatar = weChatInfo.Headimgurl
+				userInfo.Sex = weChatInfo.Sex
+				daoSql.DB.Create(userInfo)
+
+				uid = userInfo.MemberId
+				// 注册 生成 微信用户 绑定信息
+				weChatBind := &daoSql.WechatBind{
+					MemberId:   uid,
+					Openid:     weChatInfo.OpenId,
+					Nickname:   weChatInfo.Nickname,
+					Sex:        weChatInfo.Sex,
+					City:       weChatInfo.City,
+					Headimgurl: weChatInfo.Headimgurl,
+					Province:   weChatInfo.Province,
+				}
+				daoSql.DB.Create(weChatBind)
+				return
+			} else {
+				userInfo, err = daoSql.GetInfoByUid(uid)
+				return
+			}
+		}
 	}
 
-	if accessFail || nil != err {
-		// return "", "", ""
-	}
-	// return getUserFromWechat(userInfoRes.AccessToken, userInfoRes.OpenId, false)
+	return
 }
-
-// 		return self::saveWechatUserInfo($arrToken);
 
 // 生成用户授权信息的 url
 func GenAuthUrl(redirectUrl string) string {
@@ -105,38 +150,39 @@ func GenAuthUrl(redirectUrl string) string {
 }
 
 // 返回 uid
-func CheckToken(token, openId string) uint64 {
+func CheckToken(token, openId string) *daoSql.Member {
 	// token md5(openId+uid+time+"xZCFwetwq4")
 	curTime := time.Now().Unix()
-	arrStr := strings.Split(token, "&")
-	if 3 < len(arrStr) {
-		return 0
+	arrStr := strings.Split(token, "$")
+	if 3 > len(arrStr) {
+		return &daoSql.Member{}
 	}
 	lastTime := util.Atoi(arrStr[1], 64, true).(int64)
 	// token 有效为15天(也没什么蛋用！！)  如此一个微信号只能登录一个用户
 	if 86400*15 < (curTime - lastTime) {
-		return 0
+		return &daoSql.Member{}
 	}
 
 	uid := util.Atoi(arrStr[2], 64, false).(uint64)
-	if token == GenToken(uid, openId, lastTime) {
-		return uid
+	if token == GenToken(uid, openId, lastTime) && 0 < uid {
+		userInfo, err := daoSql.GetInfoByUid(uid)
+		if nil == err {
+			return userInfo
+		}
 	}
-
-	return 0
+	return &daoSql.Member{}
 }
 
 func GenToken(uid uint64, openId string, curTime int64) string {
 	// token md5(openId+uid+time+"xZCFwetwq4")&time&uid
 	str := fmt.Sprintf("%s%d%dxZCFwetwq4", openId, uid, curTime)
-	str = fmt.Sprintf("%x&%d&%d", md5.Sum([]byte(str)), curTime, uid)
-
+	str = fmt.Sprintf("%x$%d$%d", md5.Sum([]byte(str)), curTime, uid)
 	return str
 }
 
 // 返回 open_id,nick,imgUrl
 // accessToken 微信用户授权 token
-func getUserFromWechat(accessToken, openid string, repeat bool) daoSql.WeChatInfo {
+func getUserFromWechat(accessToken, openid string, repeat bool) (*daoSql.WeChatInfo, error) {
 	// get userinfo
 	userInfoUrl := "https://api.weixin.qq.com/sns/userinfo"
 	params := url.Values{
@@ -145,9 +191,7 @@ func getUserFromWechat(accessToken, openid string, repeat bool) daoSql.WeChatInf
 		"openid":       {openid},
 	}
 
-	var err error
-	accessFail := true
-	for intTry := 2; intTry > 0 && accessFail && repeat; intTry-- {
+	for intTry := 2; intTry > 0 && repeat; intTry-- {
 		resBody, err := util.CallHttp(util.HTTP_GET, userInfoUrl, params)
 		if nil != err {
 			// log error
@@ -165,14 +209,11 @@ func getUserFromWechat(accessToken, openid string, repeat bool) daoSql.WeChatInf
 			continue
 		}
 
-		accessFail = false
+		return &userInfoRes.WeChatInfo, err
 	}
 
-	if accessFail || nil != err {
-		// return "", "", ""
-	}
 	// return userInfoRes.WeChatInfo
-	return daoSql.WeChatInfo{}
+	return &daoSql.WeChatInfo{}, JsAuthError
 }
 
 func getAccessToken() string {

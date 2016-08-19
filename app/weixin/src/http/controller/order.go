@@ -30,8 +30,8 @@ func (self OrderController) RegisterRoute(e *echo.Group) {
 
 // 确认信息页 form-> goods_list:[{"goods_id":"3","selected":"1","goods_num":"2"}]
 func (OrderController) PrepareOrder(ctx echo.Context) error {
-	var uid uint64
-	uid = 10
+	uid := ctx.Get("uid").(uint64)
+	fmt.Printf("%#v", uid)
 
 	goodsList, err := getCartGoodsList(ctx)
 	if nil != err {

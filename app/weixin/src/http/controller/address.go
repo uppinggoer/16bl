@@ -19,7 +19,8 @@ func (self AddressController) RegisterRoute(e *echo.Group) {
 
 // 地址列表
 func (AddressController) AddressList(ctx echo.Context) error {
-	addressList, err := daoSql.GetAddressListByUid(uint64(10), false)
+	uid := ctx.Get("uid").(uint64)
+	addressList, err := daoSql.GetAddressListByUid(uid, false)
 	if nil != err {
 		// log
 		return util.Fail(ctx, 10, "XXX")
@@ -30,7 +31,7 @@ func (AddressController) AddressList(ctx echo.Context) error {
 
 // 地址修改
 func (AddressController) AddressModify(ctx echo.Context) error {
-	uid := util.Atoi(ctx.FormValue("uid"), 64, false).(uint64)
+	uid := ctx.Get("uid").(uint64)
 
 	// 插入新的地址信息
 	trueName := ctx.FormValue("true_name")
