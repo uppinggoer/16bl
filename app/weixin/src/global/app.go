@@ -34,7 +34,7 @@ func init() {
 
 		BASE_PATH = filepath.Dir(filepath.Dir(binaryPath)) + "/"
 	}
-	BASE_PATH = "/Users/yanghongzhi/work/16bl/app/weixin"
+	BASE_PATH = "~/work/16bl/app/weixin"
 
 	homePath := filepath.Dir(filepath.Dir(BASE_PATH))
 	LOG_PATH = homePath + "/log/"
