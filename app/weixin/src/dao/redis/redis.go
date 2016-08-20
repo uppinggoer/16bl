@@ -39,6 +39,8 @@ const (
 	KeyWeiXin            = "w"
 	KeyWeiXinAccessToken = "a"
 	KeyWeiXinJsToken     = "j"
+
+	KeyOrder = "o"
 )
 
 type RedisClient struct {
@@ -53,6 +55,7 @@ func NewRedisClient() *RedisClient {
 		return &RedisClient{Conn: nil, err: ReidsPasswdEmpty}
 	}
 
+	// 连接不可重用 ！！！！
 	conn, err := redis.DialTimeout("tcp", host+":"+port, connTimeout, readTimeout, writeTimeout)
 	if err != nil {
 		return &RedisClient{Conn: conn, err: err}

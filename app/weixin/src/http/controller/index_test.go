@@ -50,6 +50,7 @@ func TestPrepareOrder(t *testing.T) {
 func TestDoOrder(t *testing.T) {
 	index := OrderController{}
 	context := util.NewContext("", "/order/do_order", `goods_list=[{"goods_id":"101","selected":"1","goods_num":"1"},{"goods_id":"102","selected":"1","goods_num":"2"}]`)
+	context.Request().Header().Set("cookie", "zhima_debug=1")
 	err := index.DoOrder(context)
 	if err != nil {
 		t.Fatal("err:", err)

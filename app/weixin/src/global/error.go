@@ -29,7 +29,8 @@ var (
 	// cart
 	CartEmpty = errors.New("cart is empty")
 	// order
-	NotYourOrder = errors.New("not your order")
+	NotYourOrder  = errors.New("not your order")
+	RepeatDoOrder = errors.New("repeat do order")
 
 	// wechat
 	JsAuthError = errors.New("fail get js auth")

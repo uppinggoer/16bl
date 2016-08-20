@@ -1,16 +1,17 @@
 package controller
 
 import (
-	// "fmt"
-
-	daoConf "dao/conf"
-	daoSql "dao/sql"
+	"crypto/md5"
 	"encoding/json"
 	"fmt"
+	"time"
+
+	daoConf "dao/conf"
+	daoRedis "dao/redis"
+	daoSql "dao/sql"
 	. "global"
 	apiIndex "http/api"
 	"logic"
-	"time"
 	"util"
 
 	"github.com/labstack/echo"
@@ -31,7 +32,6 @@ func (self OrderController) RegisterRoute(e *echo.Group) {
 // 确认信息页 form-> goods_list:[{"goods_id":"3","selected":"1","goods_num":"2"}]
 func (OrderController) PrepareOrder(ctx echo.Context) error {
 	uid := ctx.Get("uid").(uint64)
-	fmt.Printf("%#v", uid)
 
 	goodsList, err := getCartGoodsList(ctx)
 	if nil != err {
@@ -59,7 +59,7 @@ func (OrderController) PrepareOrder(ctx echo.Context) error {
 	// shipTimeList := logic.GetShipTime()
 
 	// 获取用户所有地址
-	myAddressList, err := daoSql.GetAddressListByUid(10, false)
+	myAddressList, err := daoSql.GetAddressListByUid(uid, false)
 	if nil != err && RecordEmpty != err {
 		// log
 		return util.Fail(ctx, 10, err.Error())
@@ -133,18 +133,19 @@ func (OrderController) PrepareOrder(ctx echo.Context) error {
 
 // 确认信息页 form-> goods_list:[{"goods_id":"3","selected":"1","goods_num":"2"}]
 func (OrderController) DoOrder(ctx echo.Context) error {
-	// // 避免同一个订单重复提交
-	// $curOrderMd5 = md5(json_encode($_REQUEST));
-	// $preOrderMd5 = Redis::getValue('do_order', $this->curUser['uid']);
-	// if ($curOrderMd5 === $preOrderMd5) {
-	// 	Logger::error(__METHOD__, "订单重复提交");
-	// 	return $this->fail('请勿重复提交！');
-	// }
-	// // 3秒内不允许重复提交同一订单
-	// Redis::setValue('do_order', $this->curUser['uid'], $curOrderMd5, 3);
+	// 设置 redis key
+	uid := ctx.Get("uid").(uint64)
 
-	var uid uint64
-	uid = 10
+	// 避免同一个订单重复提交
+	data, _ := json.Marshal(ctx.Request())
+	curOrderMd5 = fmt.Printf("%x", md5.Sum(data))
+
+	preOrderMd5 := daoRedis.NewRedisClient().Key(daoRedis.KeyOrder, util.Itoa(uid)).GET("")
+	if preOrder == preOrderMd5 {
+		// log
+		return util.Fail(ctx, 10, RepeatDoOrder)
+	}
+	daoRedis.NewRedisClient().SET("", curOrderMd5, 30)
 
 	// 获取购物车商品列表
 	goodsList, err := getCartGoodsList(ctx)
@@ -345,8 +346,7 @@ func getCartGoodsList(ctx echo.Context) (goodsList []*logic.CartInfo, err error)
 
 // 提交订单时新地址(address_id<=0) 会先插入地址表
 func fetchAddress(ctx echo.Context) (*daoSql.Address, error) {
-	var uid uint64
-	uid = 10
+	uid := ctx.Get("uid").(uint64)
 
 	// 获取提交订单时指定的地址
 	addressId := util.Atoi(ctx.FormValue("address_id"), 64, false).(uint64)

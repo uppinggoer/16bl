@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"logic"
 	"net/http"
 	"time"
@@ -35,6 +34,7 @@ func userInfo(ctx echo.Context) error {
 	// 需要登录的  路由
 	var needLogin = map[string]bool{
 		"/":               true,
+		"/order/prepare":  true,
 		"/order/do_order": true,
 		"/user":           true,
 	}
@@ -58,7 +58,6 @@ func userInfo(ctx echo.Context) error {
 
 	// 是否有 openid cookie
 	if openIdCookie, err := ctx.Cookie("openid"); nil == err {
-		fmt.Printf("%#v", openIdCookie)
 		openId = openIdCookie.Value()
 	}
 
@@ -91,8 +90,6 @@ func userInfo(ctx echo.Context) error {
 	}
 END:
 
-	openId = "XXX"
-	token = "XXX"
 	// 种植 token cookie
 	cookie := new(echo.Cookie)
 	cookie.SetName("token")
@@ -110,9 +107,5 @@ END:
 	ctx.Set("uid", curUser.MemberId)
 	ctx.Set("curUser", curUser)
 
-	fmt.Printf("%#v", curUser)
-
-	uid := ctx.Get("uid").(uint64)
-	fmt.Printf("%#v", uid)
 	return nil
 }
