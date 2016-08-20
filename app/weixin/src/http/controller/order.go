@@ -1,13 +1,11 @@
 package controller
 
 import (
-	"crypto/md5"
 	"encoding/json"
 	"fmt"
 	"time"
 
 	daoConf "dao/conf"
-	daoRedis "dao/redis"
 	daoSql "dao/sql"
 	. "global"
 	apiIndex "http/api"
@@ -137,15 +135,15 @@ func (OrderController) DoOrder(ctx echo.Context) error {
 	uid := ctx.Get("uid").(uint64)
 
 	// 避免同一个订单重复提交
-	data, _ := json.Marshal(ctx.Request())
-	curOrderMd5 = fmt.Printf("%x", md5.Sum(data))
+	// data, _ := json.Marshal(ctx.Request())
+	// curOrderMd5 = fmt.Printf("%x", md5.Sum(data))
 
-	preOrderMd5 := daoRedis.NewRedisClient().Key(daoRedis.KeyOrder, util.Itoa(uid)).GET("")
-	if preOrder == preOrderMd5 {
-		// log
-		return util.Fail(ctx, 10, RepeatDoOrder)
-	}
-	daoRedis.NewRedisClient().SET("", curOrderMd5, 30)
+	// preOrderMd5 := daoRedis.NewRedisClient().Key(daoRedis.KeyOrder, util.Itoa(uid)).GET("")
+	// if preOrder == preOrderMd5 {
+	// 	// log
+	// 	return util.Fail(ctx, 10, RepeatDoOrder)
+	// }
+	// daoRedis.NewRedisClient().SET("", curOrderMd5, 30)
 
 	// 获取购物车商品列表
 	goodsList, err := getCartGoodsList(ctx)
